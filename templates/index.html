@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通信电子创新基地 - 管理后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .sidebar-item:hover {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+        .gauge {
+            background: conic-gradient(from 0deg, #ef4444 0deg 120deg, #f59e0b 120deg 240deg, #10b981 240deg 360deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- 主容器 -->
+    <div class="flex h-screen">
+        <!-- 左侧导航栏 -->
+        <div class="w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white shadow-xl">
+            <!-- Logo区域 -->
+            <div class="p-6 border-b border-slate-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">通信电子创新基地</h1>
+                        <p class="text-sm text-slate-300">管理后台</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导航菜单 -->
+            <nav class="mt-6 px-4">
+                <!-- 主面板 -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">主面板</h3>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 bg-blue-600" data-page="dashboard">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                        <span>总览</span>
+                    </a>
+                </div>
+
+                <!-- 内容管理 -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">内容管理</h3>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700" data-page="announcements">
+                        <i data-lucide="megaphone" class="w-5 h-5 mr-3"></i>
+                        <span>消息通知</span>
+                    </a>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700 mt-2" data-page="projects">
+                        <i data-lucide="folder-kanban" class="w-5 h-5 mr-3"></i>
+                        <span>项目管理</span>
+                    </a>
+                </div>
+
+                <!-- 资源与教学 -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">资源与教学</h3>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700" data-page="devices">
+                        <i data-lucide="cpu" class="w-5 h-5 mr-3"></i>
+                        <span>设备中心</span>
+                    </a>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700 mt-2" data-page="schedules">
+                        <i data-lucide="calendar-days" class="w-5 h-5 mr-3"></i>
+                        <span>课程表管理</span>
+                    </a>
+                </div>
+
+                <!-- 人员与安全 -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">人员与安全</h3>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700" data-page="users">
+                        <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                        <span>用户管理</span>
+                    </a>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700 mt-2" data-page="attendance">
+                        <i data-lucide="clipboard-user" class="w-5 h-5 mr-3"></i>
+                        <span>考勤记录</span>
+                    </a>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700 mt-2" data-page="safety">
+                        <i data-lucide="shield-check" class="w-5 h-5 mr-3"></i>
+                        <span>安全管理</span>
+                    </a>
+                </div>
+
+                <!-- 智能中心 -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">智能中心</h3>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700" data-page="environment">
+                        <i data-lucide="thermometer-sun" class="w-5 h-5 mr-3"></i>
+                        <span>环境监控</span>
+                    </a>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700 mt-2" data-page="ai-plans">
+                        <i data-lucide="brain-circuit" class="w-5 h-5 mr-3"></i>
+                        <span>AI培养方案</span>
+                    </a>
+                </div>
+
+                <!-- 系统 -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">系统</h3>
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-slate-700" data-page="settings">
+                        <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                        <span>系统设置</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 右侧主内容区域 -->
+        <div class="flex-1 overflow-hidden">
+            <!-- 顶部标题栏 -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <h2 id="page-title" class="text-2xl font-bold text-gray-800">总览</h2>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-sm text-gray-500">
+                            <span id="current-time"></span>
+                        </div>
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i data-lucide="user" class="w-5 h-5 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 主内容区域 -->
+            <main class="flex-1 overflow-y-auto p-6" id="main-content">
+                <!-- 总览页面 -->
+                <div id="dashboard-page" class="page-content">
+                    <!-- 数据卡片 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover transition-all duration-300">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">设备总数</p>
+                                    <p class="text-3xl font-bold text-gray-900">32</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="cpu" class="w-6 h-6 text-blue-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover transition-all duration-300">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">进行中项目</p>
+                                    <p class="text-3xl font-bold text-gray-900">4</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="activity" class="w-6 h-6 text-green-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover transition-all duration-300">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">今日考勤人数</p>
+                                    <p class="text-3xl font-bold text-gray-900">12</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="users" class="w-6 h-6 text-purple-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover transition-all duration-300">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">待处理警报</p>
+                                    <p class="text-3xl font-bold text-gray-900">1</p>
+                                </div>
+                                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="siren" class="w-6 h-6 text-red-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 图表与列表 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- 环境温度图表 -->
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">近7日环境温度变化</h3>
+                            <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                                <div class="text-center">
+                                    <i data-lucide="trending-up" class="w-12 h-12 text-gray-400 mx-auto mb-2"></i>
+                                    <p class="text-gray-500">温度变化图表</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 最近动态 -->
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">最近动态</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <p class="text-sm text-gray-800">张三签到成功</p>
+                                        <p class="text-xs text-gray-500">2分钟前</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <p class="text-sm text-gray-800">设备"示波器"归还成功</p>
+                                        <p class="text-xs text-gray-500">15分钟前</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <p class="text-sm text-gray-800">新项目"智能门锁系统"已创建</p>
+                                        <p class="text-xs text-gray-500">1小时前</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <p class="text-sm text-gray-800">环境温度异常警报已解除</p>
+                                        <p class="text-xs text-gray-500">2小时前</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                                    <div>
+                                        <p class="text-sm text-gray-800">安全培训通知已发布</p>
+                                        <p class="text-xs text-gray-500">3小时前</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 消息通知页面 -->
+                <div id="announcements-page" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <!-- 操作栏 -->
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-gray-800">消息通知管理</h3>
+                                <button id="add-announcement-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                    <span>发布新通知</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 数据表格 -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">标题</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">发布者</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">发布时间</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="announcements-table" class="bg-white divide-y divide-gray-200">
+                                    <!-- 动态内容 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目管理页面 -->
+                <div id="projects-page" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <!-- 操作栏 -->
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-gray-800">实验室优秀项目管理</h3>
+                                <button id="add-project-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                    <span>添加新项目</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 数据表格 -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">项目名称</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成果类型</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成果详情</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">起止日期</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projects-table" class="bg-white divide-y divide-gray-200">
+                                    <!-- 动态内容 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 设备中心页面 -->
+                <div id="devices-page" class="page-content hidden">
+                    <!-- 筛选栏 -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <div class="flex flex-wrap items-center gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">设备分类</label>
+                                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option>全部分类</option>
+                                    <option>测量仪器</option>
+                                    <option>开发平台</option>
+                                    <option>动手实践</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">状态</label>
+                                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option>全部状态</option>
+                                    <option>可用</option>
+                                    <option>使用中</option>
+                                    <option>维修中</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">搜索</label>
+                                <input type="text" placeholder="搜索设备名称..." class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 设备网格 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden card-hover transition-all duration-300">
+                            <div class="h-48 bg-gray-200 flex items-center justify-center">
+                                <i data-lucide="cpu" class="w-16 h-16 text-gray-400"></i>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-semibold text-gray-800">频谱分析仪</h4>
+                                <p class="text-sm text-gray-600">R&S FSW26</p>
+                                <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">可用</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden card-hover transition-all duration-300">
+                            <div class="h-48 bg-gray-200 flex items-center justify-center">
+                                <i data-lucide="cpu" class="w-16 h-16 text-gray-400"></i>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-semibold text-gray-800">矢量网络分析仪</h4>
+                                <p class="text-sm text-gray-600">Keysight E5071C</p>
+                                <span class="inline-block mt-2 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">使用中</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden card-hover transition-all duration-300">
+                            <div class="h-48 bg-gray-200 flex items-center justify-center">
+                                <i data-lucide="cpu" class="w-16 h-16 text-gray-400"></i>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-semibold text-gray-800">示波器</h4>
+                                <p class="text-sm text-gray-600">Tektronix MSO4</p>
+                                <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">可用</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden card-hover transition-all duration-300">
+                            <div class="h-48 bg-gray-200 flex items-center justify-center">
+                                <i data-lucide="cpu" class="w-16 h-16 text-gray-400"></i>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-semibold text-gray-800">信号发生器</h4>
+                                <p class="text-sm text-gray-600">Keysight E8257D</p>
+                                <span class="inline-block mt-2 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">维修中</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户管理页面 -->
+                <div id="users-page" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <!-- 操作栏 -->
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-gray-800">用户管理</h3>
+                                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                    <span>添加新用户</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 数据表格 -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户名</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">姓名</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">角色</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">邮箱</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">管理员</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">管理员</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin@lab.com</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3">编辑</button>
+                                            <button class="text-red-600 hover:text-red-900">删除</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">teacher01</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">黄老师</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">教师</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">huang@lab.com</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3">编辑</button>
+                                            <button class="text-red-600 hover:text-red-900">删除</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">student01</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">张三</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">学生</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">zhangsan@student.com</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3">编辑</button>
+                                            <button class="text-red-600 hover:text-red-900">删除</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 环境监控页面 -->
+                <div id="environment-page" class="page-content hidden">
+                    <!-- 实时数据仪表盘 -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">温度</h4>
+                            <div class="relative w-32 h-32 mx-auto mb-4">
+                                <div class="w-32 h-32 rounded-full border-8 border-gray-200 relative">
+                                    <div class="absolute inset-0 rounded-full border-8 border-red-500" style="clip-path: polygon(50% 50%, 50% 0%, 75% 0%, 75% 50%)"></div>
+                                </div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-gray-800">25.5°C</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">正常范围</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">湿度</h4>
+                            <div class="relative w-32 h-32 mx-auto mb-4">
+                                <div class="w-32 h-32 rounded-full border-8 border-gray-200 relative">
+                                    <div class="absolute inset-0 rounded-full border-8 border-blue-500" style="clip-path: polygon(50% 50%, 50% 0%, 60% 0%, 60% 50%)"></div>
+                                </div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-gray-800">60.2%</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">正常范围</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">CO2浓度</h4>
+                            <div class="relative w-32 h-32 mx-auto mb-4">
+                                <div class="w-32 h-32 rounded-full border-8 border-gray-200 relative">
+                                    <div class="absolute inset-0 rounded-full border-8 border-green-500" style="clip-path: polygon(50% 50%, 50% 0%, 45% 0%, 45% 50%)"></div>
+                                </div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-xl font-bold text-gray-800">450ppm</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">正常范围</p>
+                        </div>
+                    </div>
+
+                    <!-- 历史图表 -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">24小时环境数据曲线</h3>
+                        <div class="h-80 bg-gray-50 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                            <div class="text-center">
+                                <i data-lucide="bar-chart-3" class="w-16 h-16 text-gray-400 mx-auto mb-2"></i>
+                                <p class="text-gray-500">环境数据曲线图表</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 其他页面占位符 -->
+                <div id="schedules-page" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-8 text-center">
+                        <i data-lucide="calendar-days" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">课程表管理</h3>
+                        <p class="text-gray-600">此功能模块正在开发中，敬请期待。</p>
+                    </div>
+                </div>
+
+                <div id="attendance-page" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-8 text-center">
+                        <i data-lucide="clipboard-user" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">考勤记录</h3>
+                        <p class="text-gray-600">此功能模块正在开发中，敬请期待。</p>
+                    </div>
+                </div>
+
+                <div id="safety-page" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-8 text-center">
+                        <i data-lucide="shield-check" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">安全管理</h3>
+                        <p class="text-gray-600">此功能模块正在开发中，敬请期待。</p>
+                    </div>
+                </div>
+
+                <div id="ai-plans-page" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-8 text-center">
+                        <i data-lucide="brain-circuit" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">AI培养方案</h3>
+                        <p class="text-gray-600">此功能模块正在开发中，敬请期待。</p>
+                    </div>
+                </div>
+
+                <div id="settings-page" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-8 text-center">
+                        <i data-lucide="settings" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">系统设置</h3>
+                        <p class="text-gray-600">此功能模块正在开发中，敬请期待。</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 消息通知模态框 -->
+    <div id="announcement-modal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div class="p-6 border-b border-gray-200">
+                <h3 id="announcement-modal-title" class="text-lg font-semibold text-gray-800">发布新通知</h3>
+            </div>
+            <form id="announcement-form" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">标题</label>
+                    <input type="text" id="announcement-title" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">发布者名称</label>
+                    <input type="text" id="announcement-author" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">类型</label>
+                    <select id="announcement-type" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <option value="通知">通知</option>
+                        <option value="新闻">新闻</option>
+                        <option value="动态">动态</option>
+                        <option value="安全提示">安全提示</option>
+                        <option value="天气提示">天气提示</option>
+                        <option value="名言金句">名言金句</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">内容</label>
+                    <textarea id="announcement-content" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required></textarea>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="announcement-important" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <label for="announcement-important" class="ml-2 text-sm text-gray-700">重要通知</label>
+                </div>
+            </form>
+            <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="cancel-announcement" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">取消</button>
+                <button id="save-announcement" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 项目管理模态框 -->
+    <div id="project-modal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
+            <div class="p-6 border-b border-gray-200">
+                <h3 id="project-modal-title" class="text-lg font-semibold text-gray-800">添加新项目</h3>
+            </div>
+            <form id="project-form" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">项目名称</label>
+                    <input type="text" id="project-name" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">成果类型</label>
+                    <select id="project-type" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <option value="获奖">获奖</option>
+                        <option value="专利">专利</option>
+                        <option value="软著">软著</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">成果详情</label>
+                    <textarea id="project-achievement-details" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="如：2024年中国大学生计算机设计大赛江西省级赛一等奖"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">项目描述</label>
+                    <textarea id="project-description" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">获奖图片/证书上传</label>
+                    <input type="file" id="project-image-file" accept="image/*" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <div id="current-image-display" class="mt-2 hidden">
+                        <p class="text-sm text-gray-600">当前图片：</p>
+                        <img id="current-image-preview" src="" alt="当前图片" class="mt-1 max-w-xs max-h-32 object-contain border rounded">
+                        <a id="current-image-link" href="" target="_blank" class="text-xs text-blue-600 hover:text-blue-800 ml-2">查看原图</a>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">开始日期</label>
+                        <input type="date" id="project-start-date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">结束日期</label>
+                        <input type="date" id="project-end-date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+            </form>
+            <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="cancel-project" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">取消</button>
+                <button id="save-project" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化Lucide图标
+        lucide.createIcons();
+
+        // 页面切换功能
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        const pageContents = document.querySelectorAll('.page-content');
+        const pageTitle = document.getElementById('page-title');
+
+        const pageNames = {
+            'dashboard': '总览',
+            'announcements': '消息通知',
+            'projects': '项目管理',
+            'devices': '设备中心',
+            'schedules': '课程表管理',
+            'users': '用户管理',
+            'attendance': '考勤记录',
+            'safety': '安全管理',
+            'environment': '环境监控',
+            'ai-plans': 'AI培养方案',
+            'settings': '系统设置'
+        };
+
+        function showPage(pageName) {
+            // 隐藏所有页面
+            pageContents.forEach(page => page.classList.add('hidden'));
+            
+            // 显示目标页面
+            const targetPage = document.getElementById(pageName + '-page');
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            }
+
+            // 更新标题
+            pageTitle.textContent = pageNames[pageName] || '未知页面';
+
+            // 更新导航状态
+            sidebarItems.forEach(item => {
+                item.classList.remove('bg-blue-600');
+                item.classList.add('hover:bg-slate-700');
+            });
+
+            const activeItem = document.querySelector(`[data-page="${pageName}"]`);
+            if (activeItem) {
+                activeItem.classList.add('bg-blue-600');
+                activeItem.classList.remove('hover:bg-slate-700');
+            }
+        }
+
+        // 绑定导航点击事件
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageName = item.getAttribute('data-page');
+                showPage(pageName);
+            });
+        });
+
+        // 时间显示
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // API配置
+        const API_BASE_URL = 'http://127.0.0.1:5000/api';
+
+        // 消息通知数据和功能
+        let announcements = [];
+        let currentAnnouncementId = null;
+
+        // API请求封装
+        async function apiRequest(url, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE_URL}${url}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message || '请求失败');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('API请求失败:', error);
+                alert(`操作失败: ${error.message}`);
+                throw error;
+            }
+        }
+
+        // 获取消息通知列表
+        async function loadAnnouncements() {
+            try {
+                const response = await apiRequest('/announcements?limit=50');
+                announcements = response.data.list;
+                renderAnnouncements();
+            } catch (error) {
+                console.error('加载消息通知失败:', error);
+            }
+        }
+
+        function renderAnnouncements() {
+            const tbody = document.getElementById('announcements-table');
+            tbody.innerHTML = '';
+
+            announcements.forEach(announcement => {
+                const row = document.createElement('tr');
+                const createdAt = new Date(announcement.created_at).toLocaleString('zh-CN');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="text-sm font-medium text-gray-900">${announcement.title}</div>
+                            ${announcement.is_important ? '<span class="ml-2 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">重要</span>' : ''}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${announcement.author_name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${announcement.type}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${createdAt}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="editAnnouncement(${announcement.id})">编辑</button>
+                        <button class="text-red-600 hover:text-red-900" onclick="deleteAnnouncement(${announcement.id})">删除</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function showAnnouncementModal(isEdit = false, announcement = null) {
+            const modal = document.getElementById('announcement-modal');
+            const title = document.getElementById('announcement-modal-title');
+            const form = document.getElementById('announcement-form');
+
+            title.textContent = isEdit ? '编辑通知' : '发布新通知';
+            
+            if (isEdit && announcement) {
+                document.getElementById('announcement-title').value = announcement.title;
+                document.getElementById('announcement-author').value = announcement.author_name;
+                document.getElementById('announcement-type').value = announcement.type;
+                document.getElementById('announcement-content').value = announcement.content;
+                document.getElementById('announcement-important').checked = announcement.is_important;
+                currentAnnouncementId = announcement.id;
+            } else {
+                form.reset();
+                currentAnnouncementId = null;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function hideAnnouncementModal() {
+            document.getElementById('announcement-modal').classList.add('hidden');
+        }
+
+        async function editAnnouncement(id) {
+            const announcement = announcements.find(a => a.id === id);
+            if (announcement) {
+                showAnnouncementModal(true, announcement);
+            }
+        }
+
+        async function deleteAnnouncement(id) {
+            if (confirm('确定要删除这条通知吗？')) {
+                try {
+                    await apiRequest(`/announcements/${id}`, {
+                        method: 'DELETE'
+                    });
+                    await loadAnnouncements(); // 重新加载列表
+                } catch (error) {
+                    console.error('删除消息通知失败:', error);
+                }
+            }
+        }
+
+        async function saveAnnouncement() {
+            const title = document.getElementById('announcement-title').value;
+            const author = document.getElementById('announcement-author').value;
+            const type = document.getElementById('announcement-type').value;
+            const content = document.getElementById('announcement-content').value;
+            const important = document.getElementById('announcement-important').checked;
+
+            if (!title || !author || !content) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            const announcementData = {
+                title,
+                author_name: author,
+                type,
+                content,
+                is_important: important
+            };
+
+            try {
+                if (currentAnnouncementId) {
+                    // 编辑现有消息
+                    await apiRequest(`/announcements/${currentAnnouncementId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(announcementData)
+                    });
+                } else {
+                    // 添加新消息
+                    await apiRequest('/announcements', {
+                        method: 'POST',
+                        body: JSON.stringify(announcementData)
+                    });
+                }
+
+                await loadAnnouncements(); // 重新加载列表
+                hideAnnouncementModal();
+            } catch (error) {
+                console.error('保存消息通知失败:', error);
+            }
+        }
+
+        // 项目管理数据和功能
+        let projects = [];
+        let currentProjectId = null;
+
+        // 获取项目列表
+        async function loadProjects() {
+            try {
+                const response = await apiRequest('/projects?limit=50');
+                projects = response.data.list;
+                renderProjects();
+            } catch (error) {
+                console.error('加载项目列表失败:', error);
+            }
+        }
+
+        function renderProjects() {
+            const tbody = document.getElementById('projects-table');
+            tbody.innerHTML = '';
+
+            projects.forEach(project => {
+                const row = document.createElement('tr');
+                const startDate = new Date(project.start_date).toLocaleDateString('zh-CN');
+                const endDate = new Date(project.end_date).toLocaleDateString('zh-CN');
+                
+                // 截取成果详情，如果太长则显示省略号
+                const achievementDetails = project.achievement_details || '暂无详情';
+                const truncatedDetails = achievementDetails.length > 50 
+                    ? achievementDetails.substring(0, 50) + '...' 
+                    : achievementDetails;
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${project.project_name}</div>
+                        <div class="text-sm text-gray-500">${project.description}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">${project.achievement_type}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900" title="${achievementDetails}">${truncatedDetails}</div>
+                        ${project.image_url ? `<a href="${project.image_url}" target="_blank" class="text-xs text-blue-600 hover:text-blue-800">查看图片</a>` : ''}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${startDate} 至 ${endDate}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="editProject(${project.id})">编辑</button>
+                        <button class="text-red-600 hover:text-red-900" onclick="deleteProject(${project.id})">删除</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function showProjectModal(isEdit = false, project = null) {
+            const modal = document.getElementById('project-modal');
+            const title = document.getElementById('project-modal-title');
+            const form = document.getElementById('project-form');
+            const currentImageDisplay = document.getElementById('current-image-display');
+            const currentImagePreview = document.getElementById('current-image-preview');
+            const currentImageLink = document.getElementById('current-image-link');
+
+            title.textContent = isEdit ? '编辑项目' : '添加新项目';
+            
+            if (isEdit && project) {
+                document.getElementById('project-name').value = project.project_name;
+                document.getElementById('project-type').value = project.achievement_type;
+                document.getElementById('project-achievement-details').value = project.achievement_details || '';
+                document.getElementById('project-description').value = project.description || '';
+                document.getElementById('project-start-date').value = project.start_date || '';
+                document.getElementById('project-end-date').value = project.end_date || '';
+                
+                // 显示当前图片（如果有）
+                if (project.image_url) {
+                    currentImageDisplay.classList.remove('hidden');
+                    currentImagePreview.src = project.image_url;
+                    currentImageLink.href = project.image_url;
+                } else {
+                    currentImageDisplay.classList.add('hidden');
+                }
+                
+                currentProjectId = project.id;
+            } else {
+                form.reset();
+                currentImageDisplay.classList.add('hidden');
+                currentProjectId = null;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function hideProjectModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+        }
+
+        async function editProject(id) {
+            const project = projects.find(p => p.id === id);
+            if (project) {
+                showProjectModal(true, project);
+            }
+        }
+
+        async function deleteProject(id) {
+            if (confirm('确定要删除这个项目吗？')) {
+                try {
+                    await apiRequest(`/projects/${id}`, {
+                        method: 'DELETE'
+                    });
+                    await loadProjects(); // 重新加载列表
+                } catch (error) {
+                    console.error('删除项目失败:', error);
+                }
+            }
+        }
+
+        async function saveProject() {
+            const name = document.getElementById('project-name').value;
+            const type = document.getElementById('project-type').value;
+            const achievementDetails = document.getElementById('project-achievement-details').value;
+            const description = document.getElementById('project-description').value;
+            const imageFile = document.getElementById('project-image-file').files[0];
+            const startDate = document.getElementById('project-start-date').value;
+            const endDate = document.getElementById('project-end-date').value;
+
+            if (!name || !type) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            let imageUrl = '';
+            
+            // 如果有新上传的图片，先上传图片
+            if (imageFile) {
+                try {
+                    const formData = new FormData();
+                    formData.append('image', imageFile);
+                    
+                    const uploadResponse = await fetch(`${API_BASE_URL}/upload/image`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const uploadData = await uploadResponse.json();
+                    
+                    if (!uploadData.success) {
+                        throw new Error(uploadData.message || '图片上传失败');
+                    }
+                    
+                    imageUrl = uploadData.data.url;
+                } catch (error) {
+                    console.error('图片上传失败:', error);
+                    alert(`图片上传失败: ${error.message}`);
+                    return;
+                }
+            } else if (currentProjectId) {
+                // 编辑模式下，如果没有新图片，保持原有图片URL
+                const currentProject = projects.find(p => p.id === currentProjectId);
+                imageUrl = currentProject ? currentProject.image_url : '';
+            }
+
+            const projectData = {
+                project_name: name,
+                achievement_type: type,
+                achievement_details: achievementDetails,
+                description,
+                image_url: imageUrl,
+                start_date: startDate,
+                end_date: endDate,
+                members: [] // 暂时为空数组，可以后续扩展
+            };
+
+            try {
+                if (currentProjectId) {
+                    // 编辑现有项目
+                    await apiRequest(`/projects/${currentProjectId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(projectData)
+                    });
+                } else {
+                    // 添加新项目
+                    await apiRequest('/projects', {
+                        method: 'POST',
+                        body: JSON.stringify(projectData)
+                    });
+                }
+
+                await loadProjects(); // 重新加载列表
+                hideProjectModal();
+            } catch (error) {
+                console.error('保存项目失败:', error);
+            }
+        }
+
+        // 事件绑定
+        document.getElementById('add-announcement-btn').addEventListener('click', () => showAnnouncementModal());
+        document.getElementById('cancel-announcement').addEventListener('click', hideAnnouncementModal);
+        document.getElementById('save-announcement').addEventListener('click', saveAnnouncement);
+
+        document.getElementById('add-project-btn').addEventListener('click', () => showProjectModal());
+        document.getElementById('cancel-project').addEventListener('click', hideProjectModal);
+        document.getElementById('save-project').addEventListener('click', saveProject);
+
+        // 模态框只能通过保存或取消按钮关闭，不支持背景点击关闭
+
+        // 初始化数据
+        loadAnnouncements();
+        loadProjects();
+
+        // 重新初始化图标（确保动态内容中的图标也能显示）
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 100);
+    </script>
+</body>
+</html>

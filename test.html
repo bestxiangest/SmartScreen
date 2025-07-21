@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border: 1px solid #dee2e6; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+    </style>
+</head>
+<body>
+    <h1>前后端API集成测试</h1>
+    
+    <div class="test-section">
+        <h2>消息通知API测试</h2>
+        <button onclick="testGetAnnouncements()">获取消息列表</button>
+        <button onclick="testAddAnnouncement()">添加测试消息</button>
+        <div id="announcements-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>项目管理API测试</h2>
+        <button onclick="testGetProjects()">获取项目列表</button>
+        <button onclick="testAddProject()">添加测试项目</button>
+        <div id="projects-result" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:5000/api';
+
+        async function apiRequest(url, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE_URL}${url}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message || '请求失败');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('API请求失败:', error);
+                throw error;
+            }
+        }
+
+        async function testGetAnnouncements() {
+            const resultDiv = document.getElementById('announcements-result');
+            try {
+                const response = await apiRequest('/announcements?limit=5');
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <h3>获取成功！</h3>
+                    <p>共获取到 ${response.data.list.length} 条消息</p>
+                    <pre>${JSON.stringify(response.data.list, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<h3>获取失败！</h3><p>${error.message}</p>`;
+            }
+        }
+
+        async function testAddAnnouncement() {
+            const resultDiv = document.getElementById('announcements-result');
+            try {
+                const testData = {
+                    title: '测试消息 - ' + new Date().toLocaleString(),
+                    author_name: '测试用户',
+                    type: '测试',
+                    content: '这是一条通过前端API添加的测试消息',
+                    is_important: false
+                };
+                
+                const response = await apiRequest('/announcements', {
+                    method: 'POST',
+                    body: JSON.stringify(testData)
+                });
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <h3>添加成功！</h3>
+                    <p>新消息ID: ${response.data.id}</p>
+                    <pre>${JSON.stringify(response.data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<h3>添加失败！</h3><p>${error.message}</p>`;
+            }
+        }
+
+        async function testGetProjects() {
+            const resultDiv = document.getElementById('projects-result');
+            try {
+                const response = await apiRequest('/projects?limit=5');
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <h3>获取成功！</h3>
+                    <p>共获取到 ${response.data.list.length} 个项目</p>
+                    <pre>${JSON.stringify(response.data.list, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<h3>获取失败！</h3><p>${error.message}</p>`;
+            }
+        }
+
+        async function testAddProject() {
+            const resultDiv = document.getElementById('projects-result');
+            try {
+                const testData = {
+                    name: '测试项目 - ' + new Date().toLocaleString(),
+                    achievement_type: '测试',
+                    description: '这是一个通过前端API添加的测试项目',
+                    start_date: '2025-01-01',
+                    end_date: '2025-12-31',
+                    members: []
+                };
+                
+                const response = await apiRequest('/projects', {
+                    method: 'POST',
+                    body: JSON.stringify(testData)
+                });
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <h3>添加成功！</h3>
+                    <p>新项目ID: ${response.data.id}</p>
+                    <pre>${JSON.stringify(response.data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<h3>添加失败！</h3><p>${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
