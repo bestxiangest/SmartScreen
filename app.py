@@ -11,7 +11,16 @@ app = Flask(__name__)
 CORS(app)  # 允许跨域请求
 
 # 文件上传配置
-UPLOAD_FOLDER = 'uploads'
+# 根据环境自动选择上传目录
+# 检查当前工作目录是否为服务器部署路径
+current_dir = os.getcwd()
+if '/www/wwwroot/SmartScreen' in current_dir or os.path.exists('/www/wwwroot/SmartScreen'):
+    # 服务器环境
+    UPLOAD_FOLDER = '/www/wwwroot/SmartScreen/uploads'
+else:
+    # 本地开发环境
+    UPLOAD_FOLDER = 'uploads'
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
@@ -515,6 +524,186 @@ def delete_project(project_id):
         if connection:
             connection.close()
 
+# ==================== 课程表管理接口 ====================
+
+@app.route('/api/schedules', methods=['GET'])
+def get_schedules():
+    """获取课程表列表"""
+    try:
+        connection = get_db_connection()
+        if not connection:
+            return format_response(False, "数据库连接失败")
+        
+        cursor = connection.cursor(pymysql.cursors.DictCursor)
+        
+        # 获取查询参数
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 50))
+        class_date = request.args.get('class_date')
+        
+        # 构建查询条件
+        where_conditions = []
+        params = []
+        
+        if class_date:
+            where_conditions.append("class_date = %s")
+            params.append(class_date)
+        
+        where_clause = " WHERE " + " AND ".join(where_conditions) if where_conditions else ""
+        
+        # 查询总数
+        count_sql = f"SELECT COUNT(*) as total FROM schedules{where_clause}"
+        cursor.execute(count_sql, params)
+        total = cursor.fetchone()['total']
+        
+        # 查询数据
+        offset = (page - 1) * limit
+        data_sql = f"""
+            SELECT id, course_name, teacher_name, class_date, start_time, end_time, location
+            FROM schedules{where_clause} 
+            ORDER BY class_date, start_time
+            LIMIT %s OFFSET %s
+        """
+        cursor.execute(data_sql, params + [limit, offset])
+        schedules = cursor.fetchall()
+        
+        # 格式化时间
+        for schedule in schedules:
+            if schedule['class_date']:
+                schedule['class_date'] = schedule['class_date'].isoformat()
+            if schedule['start_time']:
+                schedule['start_time'] = str(schedule['start_time'])
+            if schedule['end_time']:
+                schedule['end_time'] = str(schedule['end_time'])
+        
+        result = {
+            "list": schedules,
+            "total": total,
+            "page": page,
+            "limit": limit,
+            "pages": (total + limit - 1) // limit
+        }
+        
+        return format_response(True, "获取成功", result)
+        
+    except Exception as e:
+        return format_response(False, f"获取失败: {str(e)}")
+    finally:
+        if connection:
+            connection.close()
+
+@app.route('/api/schedules', methods=['POST'])
+def create_schedule():
+    """创建课程"""
+    try:
+        data = request.get_json()
+        
+        # 验证必填字段
+        required_fields = ['course_name', 'teacher_name', 'class_date', 'start_time', 'end_time', 'location']
+        for field in required_fields:
+            if not data.get(field):
+                return format_response(False, f"缺少必填字段: {field}")
+        
+        connection = get_db_connection()
+        if not connection:
+            return format_response(False, "数据库连接失败")
+        
+        cursor = connection.cursor()
+        
+        sql = """
+            INSERT INTO schedules (course_name, teacher_name, class_date, start_time, end_time, location)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        
+        cursor.execute(sql, (
+            data['course_name'],
+            data['teacher_name'],
+            data['class_date'],
+            data['start_time'],
+            data['end_time'],
+            data['location']
+        ))
+        
+        connection.commit()
+        schedule_id = cursor.lastrowid
+        
+        return format_response(True, "创建成功", {"id": schedule_id})
+        
+    except Exception as e:
+        return format_response(False, f"创建失败: {str(e)}")
+    finally:
+        if connection:
+            connection.close()
+
+@app.route('/api/schedules/<int:schedule_id>', methods=['PUT'])
+def update_schedule(schedule_id):
+    """更新课程"""
+    try:
+        data = request.get_json()
+        
+        connection = get_db_connection()
+        if not connection:
+            return format_response(False, "数据库连接失败")
+        
+        cursor = connection.cursor()
+        
+        # 检查记录是否存在
+        cursor.execute("SELECT id FROM schedules WHERE id = %s", (schedule_id,))
+        if not cursor.fetchone():
+            return format_response(False, "课程不存在")
+        
+        # 构建更新字段
+        update_fields = []
+        params = []
+        
+        for field in ['course_name', 'teacher_name', 'class_date', 'start_time', 'end_time', 'location']:
+            if field in data:
+                update_fields.append(f"{field} = %s")
+                params.append(data[field])
+        
+        if not update_fields:
+            return format_response(False, "没有要更新的字段")
+        
+        sql = f"UPDATE schedules SET {', '.join(update_fields)} WHERE id = %s"
+        params.append(schedule_id)
+        
+        cursor.execute(sql, params)
+        connection.commit()
+        
+        return format_response(True, "更新成功")
+        
+    except Exception as e:
+        return format_response(False, f"更新失败: {str(e)}")
+    finally:
+        if connection:
+            connection.close()
+
+@app.route('/api/schedules/<int:schedule_id>', methods=['DELETE'])
+def delete_schedule(schedule_id):
+    """删除课程"""
+    try:
+        connection = get_db_connection()
+        if not connection:
+            return format_response(False, "数据库连接失败")
+        
+        cursor = connection.cursor()
+        
+        # 检查记录是否存在
+        cursor.execute("SELECT id FROM schedules WHERE id = %s", (schedule_id,))
+        if not cursor.fetchone():
+            return format_response(False, "课程不存在")
+        
+        cursor.execute("DELETE FROM schedules WHERE id = %s", (schedule_id,))
+        connection.commit()
+        
+        return format_response(True, "删除成功")
+        
+    except Exception as e:
+        return format_response(False, f"删除失败: {str(e)}")
+    finally:
+        if connection:
+            connection.close()
+
 # ==================== 辅助接口 ====================
 
 @app.route('/api/users', methods=['GET'])
@@ -548,10 +737,11 @@ def api_info():
         "endpoints": {
             "announcements": "/api/announcements",
             "projects": "/api/projects",
+            "schedules": "/api/schedules",
             "users": "/api/users"
         }
     })
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5555)
   

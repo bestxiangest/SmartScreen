@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>通信电子创新基地 - 管理后台</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="{{ url_for('static', filename='tailwindcss.js') }}"></script>
+    <script src="{{ url_for('static', filename='lucide.js') }}"></script>
     <style>
         .sidebar-item:hover {
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -26,9 +26,9 @@
     <!-- 主容器 -->
     <div class="flex h-screen">
         <!-- 左侧导航栏 -->
-        <div class="w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white shadow-xl">
+        <div class="w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white shadow-xl h-screen flex flex-col">
             <!-- Logo区域 -->
-            <div class="p-6 border-b border-slate-700">
+            <div class="p-6 border-b border-slate-700 flex-shrink-0">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                         <i data-lucide="cpu" class="w-6 h-6"></i>
@@ -41,7 +41,7 @@
             </div>
 
             <!-- 导航菜单 -->
-            <nav class="mt-6 px-4">
+            <nav class="flex-1 overflow-y-auto mt-6 px-4 pb-6">
                 <!-- 主面板 -->
                 <div class="mb-6">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">主面板</h3>
@@ -520,10 +520,259 @@
 
                 <!-- 其他页面占位符 -->
                 <div id="schedules-page" class="page-content hidden">
-                    <div class="bg-white rounded-xl shadow-sm p-8 text-center">
-                        <i data-lucide="calendar-days" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">课程表管理</h3>
-                        <p class="text-gray-600">此功能模块正在开发中，敬请期待。</p>
+                    <!-- 课程表管理头部 -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 mb-2">电子工艺实习课程表</h2>
+                                <p class="text-gray-600">管理实验室课程安排和时间表</p>
+                            </div>
+                            <button id="add-schedule-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                添加课程
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 课程表主体 -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <!-- 课程表头部 -->
+                        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-lg font-semibold">本周课程安排</h3>
+                                <div class="text-sm opacity-90">
+                                    2025年7月21日 - 2025年7月27日
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 课程表格 -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">时间</th>
+                                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">周一<br><span class="text-gray-400 font-normal">07/21</span></th>
+                                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">周二<br><span class="text-gray-400 font-normal">07/22</span></th>
+                                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">周三<br><span class="text-gray-400 font-normal">07/23</span></th>
+                                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">周四<br><span class="text-gray-400 font-normal">07/24</span></th>
+                                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">周五<br><span class="text-gray-400 font-normal">07/25</span></th>
+                                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">周六<br><span class="text-gray-400 font-normal">07/26</span></th>
+                                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">周日<br><span class="text-gray-400 font-normal">07/27</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="schedule-table-body">
+                                    <!-- 8:00-9:30 -->
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-4 text-sm font-medium text-gray-900 border-r border-gray-200">
+                                            <div class="text-center">
+                                                <div class="font-semibold">8:00</div>
+                                                <div class="text-xs text-gray-500">9:30</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-green-100 border-l-4 border-green-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-green-800 text-sm">PCB设计基础</div>
+                                                <div class="text-xs text-green-600 mt-1">黄老师 | 德育楼305</div>
+                                                <div class="text-xs text-green-600">电子2401班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-purple-100 border-l-4 border-purple-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-purple-800 text-sm">电路仿真实验</div>
+                                                <div class="text-xs text-purple-600 mt-1">李教授 | 实验室A</div>
+                                                <div class="text-xs text-purple-600">电子2402班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-emerald-100 border-l-4 border-emerald-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-emerald-800 text-sm">创新设计实践</div>
+                                                <div class="text-xs text-emerald-600 mt-1">张老师 | 创新实验室</div>
+                                                <div class="text-xs text-emerald-600">电子2401班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-rose-100 border-l-4 border-rose-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-rose-800 text-sm">项目答辩</div>
+                                                <div class="text-xs text-rose-600 mt-1">全体教师 | 报告厅</div>
+                                                <div class="text-xs text-rose-600">全体班级</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- 10:00-11:30 -->
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-4 text-sm font-medium text-gray-900 border-r border-gray-200">
+                                            <div class="text-center">
+                                                <div class="font-semibold">10:00</div>
+                                                <div class="text-xs text-gray-500">11:30</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-blue-100 border-l-4 border-blue-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-blue-800 text-sm">单片机开发</div>
+                                                <div class="text-xs text-blue-600 mt-1">王老师 | 德育楼306</div>
+                                                <div class="text-xs text-blue-600">电子2403班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-orange-100 border-l-4 border-orange-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-orange-800 text-sm">信号与系统</div>
+                                                <div class="text-xs text-orange-600 mt-1">李教授 | 德育楼305</div>
+                                                <div class="text-xs text-orange-600">电子2401班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-red-100 border-l-4 border-red-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-red-800 text-sm">焊接工艺实训</div>
+                                                <div class="text-xs text-red-600 mt-1">张师傅 | 工艺实训室</div>
+                                                <div class="text-xs text-red-600">电子2404班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-amber-100 border-l-4 border-amber-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-amber-800 text-sm">电子竞赛培训</div>
+                                                <div class="text-xs text-amber-600 mt-1">陈老师 | 竞赛实验室</div>
+                                                <div class="text-xs text-amber-600">电子2402班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                    </tr>
+                                    <!-- 14:00-15:30 -->
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-4 text-sm font-medium text-gray-900 border-r border-gray-200">
+                                            <div class="text-center">
+                                                <div class="font-semibold">14:00</div>
+                                                <div class="text-xs text-gray-500">15:30</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-indigo-100 border-l-4 border-indigo-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-indigo-800 text-sm">嵌入式系统开发</div>
+                                                <div class="text-xs text-indigo-600 mt-1">黄老师 | 德育楼305</div>
+                                                <div class="text-xs text-indigo-600">电子2401班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-teal-100 border-l-4 border-teal-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-teal-800 text-sm">FPGA设计入门</div>
+                                                <div class="text-xs text-teal-600 mt-1">陈老师 | 实验室B</div>
+                                                <div class="text-xs text-teal-600">电子2402班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-pink-100 border-l-4 border-pink-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-pink-800 text-sm">电子测量技术</div>
+                                                <div class="text-xs text-pink-600 mt-1">刘老师 | 测量实验室</div>
+                                                <div class="text-xs text-pink-600">电子2403班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-violet-100 border-l-4 border-violet-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-violet-800 text-sm">实习总结</div>
+                                                <div class="text-xs text-violet-600 mt-1">各班导师 | 各班教室</div>
+                                                <div class="text-xs text-violet-600">全体班级</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-slate-100 border-l-4 border-slate-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-slate-800 text-sm">技能考核</div>
+                                                <div class="text-xs text-slate-600 mt-1">考核组 | 实训中心</div>
+                                                <div class="text-xs text-slate-600">电子2403班</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- 16:00-17:30 -->
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-4 text-sm font-medium text-gray-900 border-r border-gray-200">
+                                            <div class="text-center">
+                                                <div class="font-semibold">16:00</div>
+                                                <div class="text-xs text-gray-500">17:30</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-yellow-800 text-sm">电路分析实验</div>
+                                                <div class="text-xs text-yellow-600 mt-1">赵老师 | 实验室C</div>
+                                                <div class="text-xs text-yellow-600">电子2404班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-cyan-100 border-l-4 border-cyan-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-cyan-800 text-sm">数字电路设计</div>
+                                                <div class="text-xs text-cyan-600 mt-1">孙老师 | 德育楼307</div>
+                                                <div class="text-xs text-cyan-600">电子2401班</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center"></td>
+                                        <td class="px-2 py-2 text-center">
+                                            <div class="bg-lime-100 border-l-4 border-lime-500 p-3 rounded-r-lg">
+                                                <div class="font-semibold text-lime-800 text-sm">成果展示</div>
+                                                <div class="text-xs text-lime-600 mt-1">全体师生 | 展示大厅</div>
+                                                <div class="text-xs text-lime-600">全体班级</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 课程统计卡片 -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-blue-100 rounded-lg">
+                                    <i data-lucide="book-open" class="w-6 h-6 text-blue-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">本周课程</p>
+                                    <p class="text-2xl font-bold text-gray-900">12</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-green-100 rounded-lg">
+                                    <i data-lucide="users" class="w-6 h-6 text-green-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">参与班级</p>
+                                    <p class="text-2xl font-bold text-gray-900">4</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-purple-100 rounded-lg">
+                                    <i data-lucide="user-check" class="w-6 h-6 text-purple-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">授课教师</p>
+                                    <p class="text-2xl font-bold text-gray-900">8</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-orange-100 rounded-lg">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-orange-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">使用教室</p>
+                                    <p class="text-2xl font-bold text-gray-900">6</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -658,6 +907,67 @@
         </div>
     </div>
 
+    <!-- 课程表管理模态框 -->
+    <div id="schedule-modal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
+            <div class="p-6 border-b border-gray-200">
+                <h3 id="schedule-modal-title" class="text-lg font-semibold text-gray-800">添加新课程</h3>
+            </div>
+            <form id="schedule-form" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">课程名称</label>
+                    <input type="text" id="schedule-course-name" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">授课教师</label>
+                    <input type="text" id="schedule-teacher-name" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">上课班级</label>
+                    <select id="schedule-class-name" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <option value="">请选择班级</option>
+                        <option value="电子2401班">电子2401班</option>
+                        <option value="电子2402班">电子2402班</option>
+                        <option value="电子2403班">电子2403班</option>
+                        <option value="电子2404班">电子2404班</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">上课日期</label>
+                    <input type="date" id="schedule-class-date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
+                        <input type="time" id="schedule-start-time" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">结束时间</label>
+                        <input type="time" id="schedule-end-time" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">上课地点</label>
+                    <select id="schedule-location" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <option value="">请选择地点</option>
+                        <option value="德育楼305">德育楼305</option>
+                        <option value="德育楼306">德育楼306</option>
+                        <option value="德育楼307">德育楼307</option>
+                        <option value="实验室A">实验室A</option>
+                        <option value="实验室B">实验室B</option>
+                        <option value="实验室C">实验室C</option>
+                        <option value="工艺实训室">工艺实训室</option>
+                        <option value="测量实验室">测量实验室</option>
+                    </select>
+                </div>
+            </form>
+            <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="cancel-schedule" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">取消</button>
+                <button id="save-schedule" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">保存</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 初始化Lucide图标
         lucide.createIcons();
@@ -734,7 +1044,7 @@
         updateTime();
 
         // API配置
-        const API_BASE_URL = 'http://127.0.0.1:5000/api';
+        const API_BASE_URL = 'http://127.0.0.1:5555/api';
 
         // 消息通知数据和功能
         let announcements = [];
@@ -1085,6 +1395,102 @@
             }
         }
 
+        // 课程表管理功能
+        let schedules = [];
+        let currentScheduleId = null;
+
+        // 获取课程表列表
+        async function loadSchedules() {
+            try {
+                const response = await apiRequest('/schedules');
+                schedules = response.data.list || [];
+                renderScheduleTable();
+            } catch (error) {
+                console.error('加载课程表失败:', error);
+            }
+        }
+
+        function renderScheduleTable() {
+            // 这里可以根据实际需要动态更新课程表
+            // 目前使用静态数据展示
+            console.log('课程表数据:', schedules);
+        }
+
+        function showScheduleModal(isEdit = false, schedule = null) {
+            const modal = document.getElementById('schedule-modal');
+            const title = document.getElementById('schedule-modal-title');
+            const form = document.getElementById('schedule-form');
+
+            title.textContent = isEdit ? '编辑课程' : '添加新课程';
+            
+            if (isEdit && schedule) {
+                document.getElementById('schedule-course-name').value = schedule.course_name;
+                document.getElementById('schedule-teacher-name').value = schedule.teacher_name;
+                document.getElementById('schedule-class-name').value = schedule.class_name || '';
+                document.getElementById('schedule-class-date').value = schedule.class_date;
+                document.getElementById('schedule-start-time').value = schedule.start_time;
+                document.getElementById('schedule-end-time').value = schedule.end_time;
+                document.getElementById('schedule-location').value = schedule.location;
+                currentScheduleId = schedule.id;
+            } else {
+                form.reset();
+                currentScheduleId = null;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function hideScheduleModal() {
+            document.getElementById('schedule-modal').classList.add('hidden');
+        }
+
+        async function saveSchedule() {
+            const courseName = document.getElementById('schedule-course-name').value;
+            const teacherName = document.getElementById('schedule-teacher-name').value;
+            const className = document.getElementById('schedule-class-name').value;
+            const classDate = document.getElementById('schedule-class-date').value;
+            const startTime = document.getElementById('schedule-start-time').value;
+            const endTime = document.getElementById('schedule-end-time').value;
+            const location = document.getElementById('schedule-location').value;
+
+            if (!courseName || !teacherName || !className || !classDate || !startTime || !endTime || !location) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            const scheduleData = {
+                course_name: courseName,
+                teacher_name: teacherName,
+                class_name: className,
+                class_date: classDate,
+                start_time: startTime,
+                end_time: endTime,
+                location: location
+            };
+
+            try {
+                if (currentScheduleId) {
+                    // 编辑现有课程
+                    await apiRequest(`/schedules/${currentScheduleId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(scheduleData)
+                    });
+                } else {
+                    // 添加新课程
+                    await apiRequest('/schedules', {
+                        method: 'POST',
+                        body: JSON.stringify(scheduleData)
+                    });
+                }
+
+                await loadSchedules(); // 重新加载列表
+                hideScheduleModal();
+                alert('课程保存成功！');
+            } catch (error) {
+                console.error('保存课程失败:', error);
+            }
+        }
+
         // 事件绑定
         document.getElementById('add-announcement-btn').addEventListener('click', () => showAnnouncementModal());
         document.getElementById('cancel-announcement').addEventListener('click', hideAnnouncementModal);
@@ -1094,11 +1500,16 @@
         document.getElementById('cancel-project').addEventListener('click', hideProjectModal);
         document.getElementById('save-project').addEventListener('click', saveProject);
 
+        document.getElementById('add-schedule-btn').addEventListener('click', () => showScheduleModal());
+        document.getElementById('cancel-schedule').addEventListener('click', hideScheduleModal);
+        document.getElementById('save-schedule').addEventListener('click', saveSchedule);
+
         // 模态框只能通过保存或取消按钮关闭，不支持背景点击关闭
 
         // 初始化数据
         loadAnnouncements();
         loadProjects();
+        loadSchedules();
 
         // 重新初始化图标（确保动态内容中的图标也能显示）
         setTimeout(() => {
