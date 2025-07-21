@@ -128,8 +128,34 @@
                         <div class="text-sm text-gray-500">
                             <span id="current-time"></span>
                         </div>
-                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                            <i data-lucide="user" class="w-5 h-5 text-white"></i>
+                        <div class="flex items-center space-x-3">
+                            <div class="text-right">
+                                <div class="text-sm font-medium text-gray-800" id="user-name">用户</div>
+                                <div class="text-xs text-gray-500" id="user-role">角色</div>
+                            </div>
+                            <div class="relative group">
+                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center cursor-pointer">
+                                    <i data-lucide="user" class="w-5 h-5 text-white"></i>
+                                </div>
+                                <!-- 用户菜单下拉 -->
+                                <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                    <div class="py-2">
+                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                                            <i data-lucide="user" class="w-4 h-4 mr-2"></i>
+                                            个人资料
+                                        </a>
+                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                                            <i data-lucide="settings" class="w-4 h-4 mr-2"></i>
+                                            设置
+                                        </a>
+                                        <hr class="my-1">
+                                        <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center">
+                                            <i data-lucide="log-out" class="w-4 h-4 mr-2"></i>
+                                            退出登录
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1044,24 +1070,103 @@
         updateTime();
 
         // API配置
-        const API_BASE_URL = 'http://127.0.0.1:5555/api';
+        const API_BASE_URL = '/api/v1';
+
+        // 认证相关
+        let currentUser = null;
+        let accessToken = null;
 
         // 消息通知数据和功能
         let announcements = [];
         let currentAnnouncementId = null;
 
+        // 初始化认证状态
+        function initAuth() {
+            accessToken = localStorage.getItem('access_token');
+            const userInfo = localStorage.getItem('user_info');
+            
+            if (accessToken && userInfo) {
+                try {
+                    currentUser = JSON.parse(userInfo);
+                    updateUserDisplay();
+                } catch (e) {
+                    console.error('解析用户信息失败:', e);
+                    logout();
+                }
+            } else {
+                // 未登录，跳转到登录页面
+                window.location.href = '/templates/login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // 更新用户显示
+        function updateUserDisplay() {
+            if (currentUser) {
+                // 更新用户名显示
+                const userNameElement = document.getElementById('user-name');
+                if (userNameElement) {
+                    userNameElement.textContent = currentUser.real_name || currentUser.username;
+                }
+                
+                // 更新用户角色显示
+                const userRoleElement = document.getElementById('user-role');
+                if (userRoleElement) {
+                    // 如果用户有角色信息，显示第一个角色
+                    if (currentUser.roles && currentUser.roles.length > 0) {
+                        userRoleElement.textContent = currentUser.roles[0].role_name;
+                    } else {
+                        userRoleElement.textContent = '用户';
+                    }
+                }
+                
+                // 更新头像提示
+                const userIcon = document.querySelector('.w-8.h-8.bg-blue-500');
+                if (userIcon) {
+                    userIcon.title = currentUser.real_name || currentUser.username;
+                }
+            }
+        }
+
+        // 登出功能
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user_info');
+            sessionStorage.removeItem('remember_login');
+            window.location.href = '/templates/login.html';
+        }
+
         // API请求封装
         async function apiRequest(url, options = {}) {
             try {
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                };
+                
+                // 添加认证头
+                if (accessToken) {
+                    headers['Authorization'] = `Bearer ${accessToken}`;
+                }
+                
                 const response = await fetch(`${API_BASE_URL}${url}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...options.headers
-                    },
+                    headers,
                     ...options
                 });
                 
+                // 处理认证失败
+                if (response.status === 401) {
+                    alert('登录已过期，请重新登录');
+                    logout();
+                    return;
+                }
+                
                 const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || `HTTP ${response.status}`);
+                }
                 
                 if (!data.success) {
                     throw new Error(data.message || '请求失败');
@@ -1070,7 +1175,9 @@
                 return data;
             } catch (error) {
                 console.error('API请求失败:', error);
-                alert(`操作失败: ${error.message}`);
+                if (error.message !== '登录已过期，请重新登录') {
+                    alert(`操作失败: ${error.message}`);
+                }
                 throw error;
             }
         }
@@ -1506,15 +1613,30 @@
 
         // 模态框只能通过保存或取消按钮关闭，不支持背景点击关闭
 
-        // 初始化数据
-        loadAnnouncements();
-        loadProjects();
-        loadSchedules();
-
-        // 重新初始化图标（确保动态内容中的图标也能显示）
-        setTimeout(() => {
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 首先检查认证状态
+            initAuth();
+            
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // 初始化图标
             lucide.createIcons();
-        }, 100);
+            
+            // 默认显示仪表板
+            showPage('dashboard');
+            
+            // 初始化数据
+            loadAnnouncements();
+            loadProjects();
+            loadSchedules();
+
+            // 重新初始化图标（确保动态内容中的图标也能显示）
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 100);
+        });
     </script>
 </body>
 </html>

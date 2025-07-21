@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通信电子创新基地 - 登录</title>
+    <script src="{{ url_for('static', filename='tailwindcss.js') }}"></script>
+    <script src="{{ url_for('static', filename='lucide.js') }}"></script>
+    <style>
+        .login-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body class="login-bg min-h-screen flex items-center justify-center p-4">
+    <!-- 登录容器 -->    
+    <div class="w-full max-w-md">
+        <!-- Logo和标题 -->
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="cpu" class="w-10 h-10 text-white"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">通信电子创新基地</h1>
+            <p class="text-white text-opacity-80">管理后台登录</p>
+        </div>
+
+        <!-- 登录表单 -->
+        <div class="glass-effect rounded-2xl p-8 shadow-2xl">
+            <form id="login-form" class="space-y-6">
+                <!-- 用户名输入 -->
+                <div>
+                    <label for="username" class="block text-sm font-medium text-white mb-2">
+                        <i data-lucide="user" class="w-4 h-4 inline mr-2"></i>
+                        用户名
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        required 
+                        class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 input-focus transition-all duration-200"
+                        placeholder="请输入用户名"
+                    >
+                </div>
+
+                <!-- 密码输入 -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-white mb-2">
+                        <i data-lucide="lock" class="w-4 h-4 inline mr-2"></i>
+                        密码
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 input-focus transition-all duration-200 pr-12"
+                            placeholder="请输入密码"
+                        >
+                        <button 
+                            type="button" 
+                            id="toggle-password" 
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-opacity-70 hover:text-opacity-100 transition-all duration-200"
+                        >
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 记住我 -->
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input 
+                            type="checkbox" 
+                            id="remember-me" 
+                            class="w-4 h-4 text-blue-600 bg-white bg-opacity-20 border-white border-opacity-30 rounded focus:ring-blue-500 focus:ring-2"
+                        >
+                        <span class="ml-2 text-sm text-white text-opacity-80">记住我</span>
+                    </label>
+                    <a href="#" class="text-sm text-white text-opacity-80 hover:text-opacity-100 transition-all duration-200">
+                        忘记密码？
+                    </a>
+                </div>
+
+                <!-- 登录按钮 -->
+                <button 
+                    type="submit" 
+                    id="login-btn"
+                    class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 border border-white border-opacity-30 hover:border-opacity-50"
+                >
+                    <span id="login-text">登录</span>
+                    <i data-lucide="log-in" class="w-5 h-5" id="login-icon"></i>
+                </button>
+            </form>
+
+            <!-- 错误提示 -->
+            <div id="error-message" class="mt-4 p-3 bg-red-500 bg-opacity-20 border border-red-500 border-opacity-30 rounded-lg text-white text-sm hidden">
+                <i data-lucide="alert-circle" class="w-4 h-4 inline mr-2"></i>
+                <span id="error-text"></span>
+            </div>
+
+            <!-- 成功提示 -->
+            <div id="success-message" class="mt-4 p-3 bg-green-500 bg-opacity-20 border border-green-500 border-opacity-30 rounded-lg text-white text-sm hidden">
+                <i data-lucide="check-circle" class="w-4 h-4 inline mr-2"></i>
+                <span id="success-text"></span>
+            </div>
+        </div>
+
+        <!-- 底部信息 -->
+        <div class="text-center mt-8">
+            <p class="text-white text-opacity-60 text-sm">
+                © 2024 通信电子创新基地. 保留所有权利.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 初始化Lucide图标
+        lucide.createIcons();
+
+        // API配置
+        const API_BASE_URL = '/api/v1';
+
+        // DOM元素
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('toggle-password');
+        const loginBtn = document.getElementById('login-btn');
+        const loginText = document.getElementById('login-text');
+        const loginIcon = document.getElementById('login-icon');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        const successMessage = document.getElementById('success-message');
+        const successText = document.getElementById('success-text');
+        const rememberMeCheckbox = document.getElementById('remember-me');
+
+        // 密码显示/隐藏切换
+        togglePasswordBtn.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = togglePasswordBtn.querySelector('i');
+            icon.setAttribute('data-lucide', type === 'password' ? 'eye' : 'eye-off');
+            lucide.createIcons();
+        });
+
+        // 显示错误消息
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+            successMessage.classList.add('hidden');
+        }
+
+        // 显示成功消息
+        function showSuccess(message) {
+            successText.textContent = message;
+            successMessage.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+        }
+
+        // 隐藏所有消息
+        function hideMessages() {
+            errorMessage.classList.add('hidden');
+            successMessage.classList.add('hidden');
+        }
+
+        // 设置加载状态
+        function setLoading(loading) {
+            if (loading) {
+                loginBtn.disabled = true;
+                loginBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                loginText.textContent = '登录中...';
+                loginIcon.setAttribute('data-lucide', 'loader-2');
+                loginIcon.classList.add('animate-spin');
+            } else {
+                loginBtn.disabled = false;
+                loginBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                loginText.textContent = '登录';
+                loginIcon.setAttribute('data-lucide', 'log-in');
+                loginIcon.classList.remove('animate-spin');
+            }
+            lucide.createIcons();
+        }
+
+        // API请求函数
+        async function apiRequest(url, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE_URL}${url}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || `HTTP ${response.status}`);
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('API请求失败:', error);
+                throw error;
+            }
+        }
+
+        // 登录函数
+        async function login(username, password) {
+            try {
+                const response = await apiRequest('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                if (response.success) {
+                    // 保存token
+                    localStorage.setItem('access_token', response.data.token);
+                    localStorage.setItem('user_info', JSON.stringify(response.data.user));
+                    
+                    // 如果选择了记住我，保存到sessionStorage
+                    if (rememberMeCheckbox.checked) {
+                        sessionStorage.setItem('remember_login', 'true');
+                    }
+                    
+                    showSuccess('登录成功，正在跳转...');
+                    
+                    // 延迟跳转到主页面
+                    setTimeout(() => {
+                        window.location.href = '/templates/index.html';
+                    }, 1500);
+                } else {
+                    throw new Error(response.message || '登录失败');
+                }
+            } catch (error) {
+                console.error('登录失败:', error);
+                showError(error.message || '登录失败，请检查用户名和密码');
+            }
+        }
+
+        // 表单提交事件
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            
+            // 验证输入
+            if (!username) {
+                showError('请输入用户名');
+                usernameInput.focus();
+                return;
+            }
+            
+            if (!password) {
+                showError('请输入密码');
+                passwordInput.focus();
+                return;
+            }
+            
+            hideMessages();
+            setLoading(true);
+            
+            try {
+                await login(username, password);
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // 页面加载时检查是否已登录
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                // 如果已有token，尝试验证并跳转
+                window.location.href = '/templates/index.html';
+            }
+        });
+
+        // 输入框焦点事件
+        [usernameInput, passwordInput].forEach(input => {
+            input.addEventListener('focus', hideMessages);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+智慧实验室电子班牌系统 - 考勤管理API
+"""
+
+from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.api import api_bp
+from app.models import AttendanceLog, User
+from app import db
+from app.helpers.responses import api_success, api_error, api_paginated_success
+from datetime import datetime, date
+
+@api_bp.route('/attendance', methods=['GET'])
+@jwt_required()
+def get_attendance_logs():
+    """获取考勤记录列表"""
+    try:
+        # 获取查询参数
+        page = request.args.get('page', 1, type=int)
+        limit = request.args.get('limit', 10, type=int)
+        user_id = request.args.get('user_id', type=int)
+        date_str = request.args.get('date')
+        method = request.args.get('method')
+        
+        # 构建查询
+        query = AttendanceLog.query
+        
+        # 按用户筛选
+        if user_id:
+            query = query.filter(AttendanceLog.user_id == user_id)
+        
+        # 按日期筛选
+        if date_str:
+            try:
+                target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                query = query.filter(
+                    db.func.date(AttendanceLog.check_in_time) == target_date
+                )
+            except ValueError:
+                return api_error("日期格式错误，应为YYYY-MM-DD", 400)
+        
+        # 按考勤方式筛选
+        if method:
+            valid_methods = ['人脸识别', '扫码', '手动']
+            if method not in valid_methods:
+                return api_error(f"无效的考勤方式，有效方式: {', '.join(valid_methods)}", 400)
+            query = query.filter(AttendanceLog.method == method)
+        
+        # 按签到时间倒序排列
+        query = query.order_by(AttendanceLog.check_in_time.desc())
+        
+        # 分页查询
+        total = query.count()
+        logs = query.offset((page - 1) * limit).limit(limit).all()
+        
+        # 转换为字典格式
+        data = [log.to_dict() for log in logs]
+        
+        return api_paginated_success(data, page, limit, total, "获取考勤记录列表成功")
+        
+    except Exception as e:
+        return api_error(f"获取考勤记录列表失败: {str(e)}", 500)
+
+@api_bp.route('/attendance/check-in', methods=['POST'])
+@jwt_required()
+def check_in():
+    """签到"""
+    try:
+        current_user_id = get_jwt_identity()
+        data = request.get_json() or {}
+        
+        # 验证考勤方式
+        method = data.get('method', '手动')
+        valid_methods = ['人脸识别', '扫码', '手动']
+        if method not in valid_methods:
+            return api_error(f"无效的考勤方式，有效方式: {', '.join(valid_methods)}", 400)
+        
+        # 检查今日是否已签到
+        today = date.today()
+        existing_log = AttendanceLog.query.filter(
+            AttendanceLog.user_id == current_user_id,
+            db.func.date(AttendanceLog.check_in_time) == today
+        ).first()
+        
+        if existing_log:
+            return api_error("今日已签到", 400)
+        
+        # 创建签到记录
+        attendance_log = AttendanceLog(
+            user_id=current_user_id,
+            method=method,
+            emotion_status=data.get('emotion_status')
+        )
+        
+        db.session.add(attendance_log)
+        db.session.commit()
+        
+        return api_success(data=attendance_log.to_dict(), message="签到成功", code=201)
+        
+    except Exception as e:
+        db.session.rollback()
+        return api_error(f"签到失败: {str(e)}", 500)
+
+@api_bp.route('/attendance/<int:log_id>/check-out', methods=['PUT'])
+@jwt_required()
+def check_out(log_id):
+    """签出"""
+    try:
+        current_user_id = get_jwt_identity()
+        
+        # 查找签到记录
+        attendance_log = AttendanceLog.query.get(log_id)
+        
+        if not attendance_log:
+            return api_error("考勤记录不存在", 404)
+        
+        # 验证是否为当前用户的记录
+        if attendance_log.user_id != current_user_id:
+            return api_error("只能操作自己的考勤记录", 403)
+        
+        # 检查是否已签出
+        if attendance_log.check_out_time:
+            return api_error("已签出", 400)
+        
+        # 更新签出时间
+        attendance_log.check_out_time = datetime.utcnow()
+        
+        db.session.commit()
+        
+        return api_success(data=attendance_log.to_dict(), message="签出成功")
+        
+    except Exception as e:
+        db.session.rollback()
+        return api_error(f"签出失败: {str(e)}", 500)
+
+@api_bp.route('/attendance/today', methods=['GET'])
+@jwt_required()
+def get_today_attendance():
+    """获取今日考勤状态"""
+    try:
+        current_user_id = get_jwt_identity()
+        today = date.today()
+        
+        # 查找今日考勤记录
+        attendance_log = AttendanceLog.query.filter(
+            AttendanceLog.user_id == current_user_id,
+            db.func.date(AttendanceLog.check_in_time) == today
+        ).first()
+        
+        if not attendance_log:
+            return api_success(data=None, message="今日未签到")
+        
+        return api_success(data=attendance_log.to_dict(), message="获取今日考勤状态成功")
+        
+    except Exception as e:
+        return api_error(f"获取今日考勤状态失败: {str(e)}", 500)
+
+@api_bp.route('/attendance/statistics', methods=['GET'])
+@jwt_required()
+def get_attendance_statistics():
+    """获取考勤统计"""
+    try:
+        # 获取查询参数
+        user_id = request.args.get('user_id', type=int)
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        
+        # 如果没有指定用户，则统计当前用户
+        if not user_id:
+            user_id = get_jwt_identity()
+        
+        # 构建查询
+        query = AttendanceLog.query.filter(AttendanceLog.user_id == user_id)
+        
+        # 按日期范围筛选
+        if start_date:
+            try:
+                start_date_obj = datetime.strptime(start_date, '%Y-%m-%d').date()
+                query = query.filter(
+                    db.func.date(AttendanceLog.check_in_time) >= start_date_obj
+                )
+            except ValueError:
+                return api_error("开始日期格式错误，应为YYYY-MM-DD", 400)
+        
+        if end_date:
+            try:
+                end_date_obj = datetime.strptime(end_date, '%Y-%m-%d').date()
+                query = query.filter(
+                    db.func.date(AttendanceLog.check_in_time) <= end_date_obj
+                )
+            except ValueError:
+                return api_error("结束日期格式错误，应为YYYY-MM-DD", 400)
+        
+        # 统计数据
+        total_days = query.count()
+        checked_out_days = query.filter(AttendanceLog.check_out_time.isnot(None)).count()
+        
+        # 按考勤方式统计
+        method_stats = db.session.query(
+            AttendanceLog.method,
+            db.func.count(AttendanceLog.id).label('count')
+        ).filter(
+            AttendanceLog.user_id == user_id
+        )
+        
+        if start_date:
+            method_stats = method_stats.filter(
+                db.func.date(AttendanceLog.check_in_time) >= start_date_obj
+            )
+        
+        if end_date:
+            method_stats = method_stats.filter(
+                db.func.date(AttendanceLog.check_in_time) <= end_date_obj
+            )
+        
+        method_stats = method_stats.group_by(AttendanceLog.method).all()
+        
+        statistics = {
+            'total_attendance_days': total_days,
+            'completed_days': checked_out_days,
+            'incomplete_days': total_days - checked_out_days,
+            'method_statistics': {
+                method: count for method, count in method_stats
+            }
+        }
+        
+        return api_success(data=statistics, message="获取考勤统计成功")
+        
+    except Exception as e:
+        return api_error(f"获取考勤统计失败: {str(e)}", 500)
+
+@api_bp.route('/attendance/<int:log_id>', methods=['DELETE'])
+@jwt_required()
+def delete_attendance_log(log_id):
+    """删除考勤记录（管理员功能）"""
+    try:
+        attendance_log = AttendanceLog.query.get(log_id)
+        
+        if not attendance_log:
+            return api_error("考勤记录不存在", 404)
+        
+        db.session.delete(attendance_log)
+        db.session.commit()
+        
+        return api_success(message="删除考勤记录成功")
+        
+    except Exception as e:
+        db.session.rollback()
+        return api_error(f"删除考勤记录失败: {str(e)}", 500)
