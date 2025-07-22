@@ -13,7 +13,7 @@ from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime, timedelta
 from sqlalchemy import func
 
-@api_bp.route('/v1/environmental-logs', methods=['GET'])
+@api_bp.route('/environmental/data', methods=['GET'])
 def get_environmental_logs():
     """获取环境监测日志列表"""
     try:
@@ -69,7 +69,7 @@ def get_environmental_logs():
     except Exception as e:
         return api_error(f"获取环境监测日志列表失败: {str(e)}", 500)
 
-@api_bp.route('/v1/environmental-logs', methods=['POST'])
+@api_bp.route('/environmental/data', methods=['POST'])
 @jwt_required()
 def create_environmental_log():
     """创建环境监测日志"""
@@ -127,7 +127,7 @@ def create_environmental_log():
         db.session.rollback()
         return api_error(f"创建环境监测日志失败: {str(e)}", 500)
 
-@api_bp.route('/v1/environmental-logs/<int:log_id>', methods=['GET'])
+@api_bp.route('/environmental/data/<int:log_id>', methods=['GET'])
 def get_environmental_log(log_id):
     """获取单个环境监测日志详情"""
     try:
@@ -141,7 +141,7 @@ def get_environmental_log(log_id):
     except Exception as e:
         return api_error(f"获取环境监测日志详情失败: {str(e)}", 500)
 
-@api_bp.route('/v1/environmental-logs/<int:log_id>', methods=['DELETE'])
+@api_bp.route('/environmental/data/<int:log_id>', methods=['DELETE'])
 @jwt_required()
 def delete_environmental_log(log_id):
     """删除环境监测日志"""
@@ -160,7 +160,7 @@ def delete_environmental_log(log_id):
         db.session.rollback()
         return api_error(f"删除环境监测日志失败: {str(e)}", 500)
 
-@api_bp.route('/v1/environmental-logs/latest', methods=['GET'])
+@api_bp.route('/environmental/data/latest', methods=['GET'])
 def get_latest_environmental_data():
     """获取最新环境监测数据"""
     try:
@@ -189,7 +189,7 @@ def get_latest_environmental_data():
     except Exception as e:
         return api_error(f"获取最新环境监测数据失败: {str(e)}", 500)
 
-@api_bp.route('/v1/environmental-logs/statistics', methods=['GET'])
+@api_bp.route('/environmental/data/statistics', methods=['GET'])
 def get_environmental_statistics():
     """获取环境监测统计数据"""
     try:
@@ -255,7 +255,7 @@ def get_environmental_statistics():
     except Exception as e:
         return api_error(f"获取环境监测统计数据失败: {str(e)}", 500)
 
-@api_bp.route('/v1/environmental-logs/batch', methods=['POST'])
+@api_bp.route('/environmental/data/batch', methods=['POST'])
 @jwt_required()
 def create_batch_environmental_logs():
     """批量创建环境监测日志"""

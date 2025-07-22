@@ -6,8 +6,35 @@
 
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
-from app.extensions import db, jwt
+from datetime import timedelta
 import os
+import hmac
+import hashlib
+
+# 修复JWT HMAC digestmod问题
+def patch_jwt_hmac():
+    """修复Flask-JWT-Extended在某些环境下的HMAC digestmod问题"""
+    try:
+        # 保存原始的hmac.new函数
+        original_hmac_new = hmac.new
+        
+        def patched_hmac_new(key, msg=None, digestmod=None):
+            """确保HMAC调用时总是包含digestmod参数"""
+            if digestmod is None:
+                digestmod = hashlib.sha256
+            return original_hmac_new(key, msg, digestmod)
+        
+        # 替换hmac.new函数
+        hmac.new = patched_hmac_new
+        
+    except Exception:
+        # 如果补丁失败，静默忽略，让应用继续运行
+        pass
+
+# 在导入JWT相关模块之前应用补丁
+patch_jwt_hmac()
+
+from app.extensions import db, jwt
 
 # 创建Flask应用
 app = Flask(__name__)
@@ -17,16 +44,20 @@ app.config['SECRET_KEY'] = 'smartscreen-secret-key-2025'
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:zzn20041031@localhost:3306/smartscreen'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
+app.config['JWT_SECRET_KEY'] = 'jwt-secret-string-smartscreen'
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
+app.config['JWT_ALGORITHM'] = 'HS256'  # 显式指定JWT算法
 
 # 初始化扩展
 db.init_app(app)
 jwt.init_app(app)
 CORS(app, origins=['*'])
 
-# 注册API蓝图
+# 注册蓝图
 from app.api import api_bp
+from app.main import main_bp
 app.register_blueprint(api_bp, url_prefix='/api')
+app.register_blueprint(main_bp)
 
 # 创建数据库表
 with app.app_context():

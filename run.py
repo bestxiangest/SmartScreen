@@ -13,6 +13,6 @@ if __name__ == '__main__':
     # 从环境变量获取配置，默认为开发环境
     debug = os.getenv('FLASK_DEBUG', 'True').lower() == 'true'
     host = os.getenv('FLASK_HOST', '0.0.0.0')
-    port = int(os.getenv('FLASK_PORT', 5555))
+    port = int(os.getenv('FLASK_PORT', 5000))
     
     app.run(debug=debug, host=host, port=port)

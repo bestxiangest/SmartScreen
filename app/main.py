@@ -11,13 +11,13 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    """主页"""
-    return jsonify({
-        'message': '智慧实验室电子班牌系统 API',
-        'version': '1.0.0',
-        'status': 'running',
-        'api_prefix': '/api/v1'
-    })
+    """主页 - 登录界面"""
+    return render_template('login.html')
+
+@main_bp.route('/login')
+def login_page():
+    """登录页面"""
+    return render_template('login.html')
 
 @main_bp.route('/health')
 def health_check():

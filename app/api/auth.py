@@ -11,7 +11,7 @@ from app.models import User
 from app.helpers.responses import api_success, api_error
 from datetime import timedelta
 
-@api_bp.route('/v1/auth/login', methods=['POST'])
+@api_bp.route('/auth/login', methods=['POST'])
 def login():
     """用户登录接口"""
     try:
@@ -48,7 +48,7 @@ def login():
     except Exception as e:
         return api_error(f"登录失败: {str(e)}", 500)
 
-@api_bp.route('/v1/auth/profile', methods=['GET'])
+@api_bp.route('/auth/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
     """获取当前用户信息"""
@@ -64,7 +64,7 @@ def get_profile():
     except Exception as e:
         return api_error(f"获取用户信息失败: {str(e)}", 500)
 
-@api_bp.route('/v1/auth/refresh', methods=['POST'])
+@api_bp.route('/auth/refresh', methods=['POST'])
 @jwt_required()
 def refresh_token():
     """刷新JWT令牌"""

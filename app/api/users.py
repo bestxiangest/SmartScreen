@@ -12,7 +12,7 @@ from app.api import api_bp
 from app.models import User, Role, UserRole
 from app.helpers.responses import api_success, api_error, api_paginated_success, format_validation_error
 
-@api_bp.route('/v1/users', methods=['GET'])
+@api_bp.route('/users', methods=['GET'])
 @jwt_required()
 def get_users():
     """获取用户列表"""
@@ -20,6 +20,14 @@ def get_users():
         # 获取分页参数
         page = request.args.get('page', 1, type=int)
         limit = request.args.get('limit', 10, type=int)
+        
+        # 验证分页参数
+        if page < 1:
+            return api_error("页码必须大于0", 422)
+        if limit < 1:
+            return api_error("每页数量必须大于0", 422)
+        if limit > 100:  # 限制最大每页数量
+            return api_error("每页数量不能超过100", 422)
         
         # 获取筛选参数
         role_name = request.args.get('role')
@@ -74,7 +82,7 @@ def get_users():
     except Exception as e:
         return api_error(f"获取用户列表失败: {str(e)}", 500)
 
-@api_bp.route('/v1/users', methods=['POST'])
+@api_bp.route('/users', methods=['POST'])
 @jwt_required()
 def create_user():
     """创建新用户"""
@@ -137,7 +145,7 @@ def create_user():
         db.session.rollback()
         return api_error(f"用户创建失败: {str(e)}", 500)
 
-@api_bp.route('/v1/users/<int:user_id>', methods=['GET'])
+@api_bp.route('/users/<int:user_id>', methods=['GET'])
 @jwt_required()
 def get_user(user_id):
     """获取单个用户详情"""
@@ -156,7 +164,7 @@ def get_user(user_id):
     except Exception as e:
         return api_error(f"获取用户详情失败: {str(e)}", 500)
 
-@api_bp.route('/v1/users/<int:user_id>', methods=['PUT'])
+@api_bp.route('/users/<int:user_id>', methods=['PUT'])
 @jwt_required()
 def update_user(user_id):
     """更新用户信息"""
@@ -215,7 +223,7 @@ def update_user(user_id):
         db.session.rollback()
         return api_error(f"用户信息更新失败: {str(e)}", 500)
 
-@api_bp.route('/v1/users/<int:user_id>', methods=['DELETE'])
+@api_bp.route('/users/<int:user_id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(user_id):
     """删除用户"""
@@ -246,7 +254,7 @@ def delete_user(user_id):
         db.session.rollback()
         return api_error(f"用户删除失败: {str(e)}", 500)
 
-@api_bp.route('/v1/users/<int:user_id>/roles', methods=['GET'])
+@api_bp.route('/users/<int:user_id>/roles', methods=['GET'])
 @jwt_required()
 def get_user_roles(user_id):
     """获取用户角色"""
@@ -263,7 +271,7 @@ def get_user_roles(user_id):
     except Exception as e:
         return api_error(f"获取用户角色失败: {str(e)}", 500)
 
-@api_bp.route('/v1/users/<int:user_id>/roles', methods=['PUT'])
+@api_bp.route('/users/<int:user_id>/roles', methods=['PUT'])
 @jwt_required()
 def update_user_roles(user_id):
     """更新用户角色"""
@@ -303,7 +311,7 @@ def update_user_roles(user_id):
         db.session.rollback()
         return api_error(f"用户角色更新失败: {str(e)}", 500)
 
-@api_bp.route('/v1/roles', methods=['GET'])
+@api_bp.route('/roles', methods=['GET'])
 @jwt_required()
 def get_roles():
     """获取所有角色"""
@@ -316,7 +324,7 @@ def get_roles():
     except Exception as e:
         return api_error(f"获取角色列表失败: {str(e)}", 500)
 
-@api_bp.route('/v1/roles', methods=['POST'])
+@api_bp.route('/roles', methods=['POST'])
 @jwt_required()
 def create_role():
     """创建新角色"""
@@ -346,7 +354,7 @@ def create_role():
         db.session.rollback()
         return api_error(f"角色创建失败: {str(e)}", 500)
 
-@api_bp.route('/v1/roles/<int:role_id>', methods=['PUT'])
+@api_bp.route('/roles/<int:role_id>', methods=['PUT'])
 @jwt_required()
 def update_role(role_id):
     """更新角色信息"""
@@ -377,7 +385,7 @@ def update_role(role_id):
         db.session.rollback()
         return api_error(f"角色信息更新失败: {str(e)}", 500)
 
-@api_bp.route('/v1/roles/<int:role_id>', methods=['DELETE'])
+@api_bp.route('/roles/<int:role_id>', methods=['DELETE'])
 @jwt_required()
 def delete_role(role_id):
     """删除角色"""

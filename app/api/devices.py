@@ -13,7 +13,7 @@ from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime
 
 # 设备分类相关接口
-@api_bp.route('/v1/device-categories', methods=['GET'])
+@api_bp.route('/device-categories', methods=['GET'])
 def get_device_categories():
     """获取设备分类列表"""
     try:
@@ -25,7 +25,7 @@ def get_device_categories():
     except Exception as e:
         return api_error(f"获取设备分类列表失败: {str(e)}", 500)
 
-@api_bp.route('/v1/device-categories', methods=['POST'])
+@api_bp.route('/device-categories', methods=['POST'])
 @jwt_required()
 def create_device_category():
     """创建设备分类"""
@@ -53,8 +53,65 @@ def create_device_category():
         db.session.rollback()
         return api_error(f"创建设备分类失败: {str(e)}", 500)
 
+@api_bp.route('/device-categories/<int:category_id>', methods=['PUT'])
+@jwt_required()
+def update_device_category(category_id):
+    """更新设备分类"""
+    try:
+        category = DeviceCategory.query.get(category_id)
+        
+        if not category:
+            return api_error("设备分类不存在", 404)
+        
+        data = request.get_json()
+        
+        if not data or not data.get('category_name'):
+            return api_error("分类名称不能为空", 400)
+        
+        # 检查分类名称是否已存在（排除当前分类）
+        existing_category = DeviceCategory.query.filter(
+            DeviceCategory.category_name == data['category_name'],
+            DeviceCategory.id != category_id
+        ).first()
+        
+        if existing_category:
+            return api_error("分类名称已存在", 400)
+        
+        category.category_name = data['category_name']
+        db.session.commit()
+        
+        return api_success(data=category.to_dict(), message="更新设备分类成功")
+        
+    except Exception as e:
+        db.session.rollback()
+        return api_error(f"更新设备分类失败: {str(e)}", 500)
+
+@api_bp.route('/device-categories/<int:category_id>', methods=['DELETE'])
+@jwt_required()
+def delete_device_category(category_id):
+    """删除设备分类"""
+    try:
+        category = DeviceCategory.query.get(category_id)
+        
+        if not category:
+            return api_error("设备分类不存在", 404)
+        
+        # 检查是否有设备使用该分类
+        devices_count = Device.query.filter_by(category_id=category_id).count()
+        if devices_count > 0:
+            return api_error(f"该分类下还有{devices_count}个设备，无法删除", 400)
+        
+        db.session.delete(category)
+        db.session.commit()
+        
+        return api_success(message="删除设备分类成功")
+        
+    except Exception as e:
+        db.session.rollback()
+        return api_error(f"删除设备分类失败: {str(e)}", 500)
+
 # 设备相关接口
-@api_bp.route('/v1/devices', methods=['GET'])
+@api_bp.route('/devices', methods=['GET'])
 def get_devices():
     """获取设备列表"""
     try:
@@ -90,7 +147,7 @@ def get_devices():
     except Exception as e:
         return api_error(f"获取设备列表失败: {str(e)}", 500)
 
-@api_bp.route('/v1/devices', methods=['POST'])
+@api_bp.route('/devices', methods=['POST'])
 @jwt_required()
 def create_device():
     """创建设备"""
@@ -145,7 +202,7 @@ def create_device():
         db.session.rollback()
         return api_error(f"创建设备失败: {str(e)}", 500)
 
-@api_bp.route('/v1/devices/<int:device_id>', methods=['GET'])
+@api_bp.route('/devices/<int:device_id>', methods=['GET'])
 def get_device(device_id):
     """获取单个设备详情"""
     try:
@@ -159,7 +216,7 @@ def get_device(device_id):
     except Exception as e:
         return api_error(f"获取设备详情失败: {str(e)}", 500)
 
-@api_bp.route('/v1/devices/<int:device_id>', methods=['PUT'])
+@api_bp.route('/devices/<int:device_id>', methods=['PUT'])
 @jwt_required()
 def update_device(device_id):
     """更新设备"""
@@ -208,7 +265,7 @@ def update_device(device_id):
         db.session.rollback()
         return api_error(f"更新设备失败: {str(e)}", 500)
 
-@api_bp.route('/v1/devices/<int:device_id>', methods=['DELETE'])
+@api_bp.route('/devices/<int:device_id>', methods=['DELETE'])
 @jwt_required()
 def delete_device(device_id):
     """删除设备"""
@@ -228,7 +285,7 @@ def delete_device(device_id):
         return api_error(f"删除设备失败: {str(e)}", 500)
 
 # 设备使用记录相关接口
-@api_bp.route('/v1/device-usage-logs', methods=['GET'])
+@api_bp.route('/device-usage-logs', methods=['GET'])
 @jwt_required()
 def get_device_usage_logs():
     """获取设备使用记录列表"""
@@ -265,7 +322,7 @@ def get_device_usage_logs():
     except Exception as e:
         return api_error(f"获取设备使用记录列表失败: {str(e)}", 500)
 
-@api_bp.route('/v1/devices/<int:device_id>/checkout', methods=['POST'])
+@api_bp.route('/devices/<int:device_id>/checkout', methods=['POST'])
 @jwt_required()
 def checkout_device(device_id):
     """借出设备"""
@@ -300,7 +357,7 @@ def checkout_device(device_id):
         db.session.rollback()
         return api_error(f"设备借出失败: {str(e)}", 500)
 
-@api_bp.route('/v1/device-usage-logs/<int:log_id>/checkin', methods=['PUT'])
+@api_bp.route('/device-usage-logs/<int:log_id>/checkin', methods=['PUT'])
 @jwt_required()
 def checkin_device(log_id):
     """归还设备"""

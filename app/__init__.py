@@ -5,10 +5,9 @@
 """
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from config import config
+from app.extensions import db, jwt
 import os
 
 # 修复JWT HMAC digestmod问题
@@ -38,17 +37,20 @@ def patch_jwt_hmac():
 patch_jwt_hmac()
 
 # 初始化扩展
-db = SQLAlchemy()
-jwt = JWTManager()
 cors = CORS()
 
 def create_app(config_name=None):
     """应用工厂函数"""
     
+    # 获取项目根目录
+    basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    
     if config_name is None:
         config_name = os.getenv('FLASK_CONFIG', 'default')
     
-    app = Flask(__name__)
+    app = Flask(__name__, 
+                template_folder=os.path.join(basedir, 'templates'),
+                static_folder=os.path.join(basedir, 'static'))
     app.config.from_object(config[config_name])
     
     # 初始化扩展

@@ -25,7 +25,7 @@ def generate_unique_filename(filename):
     unique_name = str(uuid.uuid4())
     return f"{unique_name}.{ext}" if ext else unique_name
 
-@api_bp.route('/v1/upload/image', methods=['POST'])
+@api_bp.route('/upload/image', methods=['POST'])
 @jwt_required()
 def upload_image():
     """上传图片文件"""
@@ -84,7 +84,7 @@ def upload_image():
     except Exception as e:
         return api_error(f"文件上传失败: {str(e)}", 500)
 
-@api_bp.route('/v1/upload/multiple', methods=['POST'])
+@api_bp.route('/upload/multiple', methods=['POST'])
 @jwt_required()
 def upload_multiple_images():
     """批量上传图片文件"""
@@ -159,7 +159,7 @@ def upload_multiple_images():
     except Exception as e:
         return api_error(f"批量文件上传失败: {str(e)}", 500)
 
-@api_bp.route('/v1/upload/info', methods=['GET'])
+@api_bp.route('/upload/info', methods=['GET'])
 def get_upload_info():
     """获取上传配置信息"""
     try:

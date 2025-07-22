@@ -17,7 +17,7 @@ import qrcode
 import io
 import base64
 
-@api_bp.route('/v1/attendance', methods=['GET'])
+@api_bp.route('/attendance', methods=['GET'])
 @jwt_required()
 def get_attendance_logs():
     """获取考勤记录列表"""
@@ -68,7 +68,7 @@ def get_attendance_logs():
     except Exception as e:
         return api_error(f"获取考勤记录列表失败: {str(e)}", 500)
 
-@api_bp.route('/v1/attendance/check-in', methods=['POST'])
+@api_bp.route('/attendance/check-in', methods=['POST'])
 @jwt_required()
 def check_in():
     """签到"""
@@ -108,7 +108,7 @@ def check_in():
         db.session.rollback()
         return api_error(f"签到失败: {str(e)}", 500)
 
-@api_bp.route('/v1/attendance/<int:log_id>/check-out', methods=['PUT'])
+@api_bp.route('/attendance/<int:log_id>/check-out', methods=['PUT'])
 @jwt_required()
 def check_out(log_id):
     """签出"""
@@ -140,7 +140,7 @@ def check_out(log_id):
         db.session.rollback()
         return api_error(f"签出失败: {str(e)}", 500)
 
-@api_bp.route('/v1/attendance/today', methods=['GET'])
+@api_bp.route('/attendance/today', methods=['GET'])
 @jwt_required()
 def get_today_attendance():
     """获取今日考勤状态"""
@@ -162,7 +162,7 @@ def get_today_attendance():
     except Exception as e:
         return api_error(f"获取今日考勤状态失败: {str(e)}", 500)
 
-@api_bp.route('/v1/attendance/statistics', methods=['GET'])
+@api_bp.route('/attendance/statistics', methods=['GET'])
 @jwt_required()
 def get_attendance_statistics():
     """获取考勤统计"""
@@ -236,7 +236,7 @@ def get_attendance_statistics():
     except Exception as e:
         return api_error(f"获取考勤统计失败: {str(e)}", 500)
 
-@api_bp.route('/v1/attendance/<int:log_id>', methods=['DELETE'])
+@api_bp.route('/attendance/<int:log_id>', methods=['DELETE'])
 @jwt_required()
 def delete_attendance_log(log_id):
     """删除考勤记录（管理员功能）"""
@@ -255,7 +255,7 @@ def delete_attendance_log(log_id):
         db.session.rollback()
         return api_error(f"删除考勤记录失败: {str(e)}", 500)
 
-@api_bp.route('/v1/attendance/qr-code', methods=['GET'])
+@api_bp.route('/attendance/qr-code', methods=['GET'])
 def generate_qr_code():
     """生成每日二维码"""
     try:
@@ -302,7 +302,7 @@ def generate_qr_code():
     except Exception as e:
         return api_error(f"生成二维码失败: {str(e)}", 500)
 
-@api_bp.route('/v1/attendance/qr-code-url', methods=['POST'])
+@api_bp.route('/attendance/qr-code-url', methods=['POST'])
 def generate_qr_code_with_url():
     """生成包含URL的二维码"""
     try:
@@ -355,7 +355,7 @@ def generate_qr_code_with_url():
         return api_error(f"生成二维码失败: {str(e)}", 500)
 
 
-@api_bp.route('/v1/attendance/qr-checkin', methods=['POST'])
+@api_bp.route('/attendance/qr-checkin', methods=['POST'])
 def qr_code_checkin():
     """二维码签到（无需JWT认证）"""
     try:
