@@ -8,11 +8,11 @@ from flask import request
 from flask_jwt_extended import jwt_required
 from app.api import api_bp
 from app.models import Lab
-from app import db
+from app.extensions import db
 from app.helpers.responses import api_success, api_error
 import json
 
-@api_bp.route('/labs', methods=['GET'])
+@api_bp.route('/v1/labs', methods=['GET'])
 def get_labs():
     """获取实验室信息列表"""
     try:
@@ -24,7 +24,7 @@ def get_labs():
     except Exception as e:
         return api_error(f"获取实验室信息列表失败: {str(e)}", 500)
 
-@api_bp.route('/labs', methods=['POST'])
+@api_bp.route('/v1/labs', methods=['POST'])
 @jwt_required()
 def create_lab():
     """创建实验室信息"""
@@ -64,7 +64,7 @@ def create_lab():
         db.session.rollback()
         return api_error(f"创建实验室信息失败: {str(e)}", 500)
 
-@api_bp.route('/labs/<int:lab_id>', methods=['GET'])
+@api_bp.route('/v1/labs/<int:lab_id>', methods=['GET'])
 def get_lab(lab_id):
     """获取单个实验室详情"""
     try:
@@ -78,7 +78,7 @@ def get_lab(lab_id):
     except Exception as e:
         return api_error(f"获取实验室详情失败: {str(e)}", 500)
 
-@api_bp.route('/labs/<int:lab_id>', methods=['PUT'])
+@api_bp.route('/v1/labs/<int:lab_id>', methods=['PUT'])
 @jwt_required()
 def update_lab(lab_id):
     """更新实验室信息"""
@@ -126,7 +126,7 @@ def update_lab(lab_id):
         db.session.rollback()
         return api_error(f"更新实验室信息失败: {str(e)}", 500)
 
-@api_bp.route('/labs/<int:lab_id>', methods=['DELETE'])
+@api_bp.route('/v1/labs/<int:lab_id>', methods=['DELETE'])
 @jwt_required()
 def delete_lab(lab_id):
     """删除实验室信息"""
@@ -145,7 +145,7 @@ def delete_lab(lab_id):
         db.session.rollback()
         return api_error(f"删除实验室信息失败: {str(e)}", 500)
 
-@api_bp.route('/labs/default', methods=['GET'])
+@api_bp.route('/v1/labs/default', methods=['GET'])
 def get_default_lab():
     """获取默认实验室信息（用于班牌显示）"""
     try:

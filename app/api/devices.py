@@ -8,12 +8,12 @@ from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api import api_bp
 from app.models import Device, DeviceCategory, DeviceUsageLog, User
-from app import db
+from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime
 
 # 设备分类相关接口
-@api_bp.route('/device-categories', methods=['GET'])
+@api_bp.route('/v1/device-categories', methods=['GET'])
 def get_device_categories():
     """获取设备分类列表"""
     try:
@@ -25,7 +25,7 @@ def get_device_categories():
     except Exception as e:
         return api_error(f"获取设备分类列表失败: {str(e)}", 500)
 
-@api_bp.route('/device-categories', methods=['POST'])
+@api_bp.route('/v1/device-categories', methods=['POST'])
 @jwt_required()
 def create_device_category():
     """创建设备分类"""
@@ -54,7 +54,7 @@ def create_device_category():
         return api_error(f"创建设备分类失败: {str(e)}", 500)
 
 # 设备相关接口
-@api_bp.route('/devices', methods=['GET'])
+@api_bp.route('/v1/devices', methods=['GET'])
 def get_devices():
     """获取设备列表"""
     try:
@@ -90,7 +90,7 @@ def get_devices():
     except Exception as e:
         return api_error(f"获取设备列表失败: {str(e)}", 500)
 
-@api_bp.route('/devices', methods=['POST'])
+@api_bp.route('/v1/devices', methods=['POST'])
 @jwt_required()
 def create_device():
     """创建设备"""
@@ -145,7 +145,7 @@ def create_device():
         db.session.rollback()
         return api_error(f"创建设备失败: {str(e)}", 500)
 
-@api_bp.route('/devices/<int:device_id>', methods=['GET'])
+@api_bp.route('/v1/devices/<int:device_id>', methods=['GET'])
 def get_device(device_id):
     """获取单个设备详情"""
     try:
@@ -159,7 +159,7 @@ def get_device(device_id):
     except Exception as e:
         return api_error(f"获取设备详情失败: {str(e)}", 500)
 
-@api_bp.route('/devices/<int:device_id>', methods=['PUT'])
+@api_bp.route('/v1/devices/<int:device_id>', methods=['PUT'])
 @jwt_required()
 def update_device(device_id):
     """更新设备"""
@@ -208,7 +208,7 @@ def update_device(device_id):
         db.session.rollback()
         return api_error(f"更新设备失败: {str(e)}", 500)
 
-@api_bp.route('/devices/<int:device_id>', methods=['DELETE'])
+@api_bp.route('/v1/devices/<int:device_id>', methods=['DELETE'])
 @jwt_required()
 def delete_device(device_id):
     """删除设备"""
@@ -228,7 +228,7 @@ def delete_device(device_id):
         return api_error(f"删除设备失败: {str(e)}", 500)
 
 # 设备使用记录相关接口
-@api_bp.route('/device-usage-logs', methods=['GET'])
+@api_bp.route('/v1/device-usage-logs', methods=['GET'])
 @jwt_required()
 def get_device_usage_logs():
     """获取设备使用记录列表"""
@@ -265,7 +265,7 @@ def get_device_usage_logs():
     except Exception as e:
         return api_error(f"获取设备使用记录列表失败: {str(e)}", 500)
 
-@api_bp.route('/devices/<int:device_id>/checkout', methods=['POST'])
+@api_bp.route('/v1/devices/<int:device_id>/checkout', methods=['POST'])
 @jwt_required()
 def checkout_device(device_id):
     """借出设备"""
@@ -278,7 +278,7 @@ def checkout_device(device_id):
         if device.status != '可用':
             return api_error("设备当前不可借出", 400)
         
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         data = request.get_json() or {}
         
         # 创建使用记录
@@ -300,7 +300,7 @@ def checkout_device(device_id):
         db.session.rollback()
         return api_error(f"设备借出失败: {str(e)}", 500)
 
-@api_bp.route('/device-usage-logs/<int:log_id>/checkin', methods=['PUT'])
+@api_bp.route('/v1/device-usage-logs/<int:log_id>/checkin', methods=['PUT'])
 @jwt_required()
 def checkin_device(log_id):
     """归还设备"""
@@ -313,7 +313,7 @@ def checkin_device(log_id):
         if usage_log.checkin_time:
             return api_error("设备已归还", 400)
         
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         
         # 验证是否为借出用户
         if usage_log.user_id != current_user_id:

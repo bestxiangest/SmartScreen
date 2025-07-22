@@ -7,7 +7,7 @@
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash
-from app import db
+from app.extensions import db
 from app.api import api_bp
 from app.models import User, Role, UserRole
 from app.helpers.responses import api_success, api_error, api_paginated_success, format_validation_error
@@ -225,7 +225,7 @@ def delete_user(user_id):
             return api_error("用户不存在", 404)
         
         # 检查是否为当前登录用户
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         if user_id == current_user_id:
             return api_error("不能删除当前登录用户", 400)
         

@@ -8,10 +8,10 @@ from flask import request
 from flask_jwt_extended import jwt_required
 from app.api import api_bp
 from app.models import SafetyGuideline
-from app import db
+from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 
-@api_bp.route('/safety-guidelines', methods=['GET'])
+@api_bp.route('/v1/safety-guidelines', methods=['GET'])
 def get_safety_guidelines():
     """获取安全须知列表"""
     try:
@@ -42,7 +42,7 @@ def get_safety_guidelines():
     except Exception as e:
         return api_error(f"获取安全须知列表失败: {str(e)}", 500)
 
-@api_bp.route('/safety-guidelines', methods=['POST'])
+@api_bp.route('/v1/safety-guidelines', methods=['POST'])
 @jwt_required()
 def create_safety_guideline():
     """创建安全须知"""
@@ -75,7 +75,7 @@ def create_safety_guideline():
         db.session.rollback()
         return api_error(f"创建安全须知失败: {str(e)}", 500)
 
-@api_bp.route('/safety-guidelines/<int:guideline_id>', methods=['GET'])
+@api_bp.route('/v1/safety-guidelines/<int:guideline_id>', methods=['GET'])
 def get_safety_guideline(guideline_id):
     """获取单个安全须知详情"""
     try:
@@ -89,7 +89,7 @@ def get_safety_guideline(guideline_id):
     except Exception as e:
         return api_error(f"获取安全须知详情失败: {str(e)}", 500)
 
-@api_bp.route('/safety-guidelines/<int:guideline_id>', methods=['PUT'])
+@api_bp.route('/v1/safety-guidelines/<int:guideline_id>', methods=['PUT'])
 @jwt_required()
 def update_safety_guideline(guideline_id):
     """更新安全须知"""
@@ -118,7 +118,7 @@ def update_safety_guideline(guideline_id):
         db.session.rollback()
         return api_error(f"更新安全须知失败: {str(e)}", 500)
 
-@api_bp.route('/safety-guidelines/<int:guideline_id>', methods=['DELETE'])
+@api_bp.route('/v1/safety-guidelines/<int:guideline_id>', methods=['DELETE'])
 @jwt_required()
 def delete_safety_guideline(guideline_id):
     """删除安全须知"""
@@ -137,7 +137,7 @@ def delete_safety_guideline(guideline_id):
         db.session.rollback()
         return api_error(f"删除安全须知失败: {str(e)}", 500)
 
-@api_bp.route('/safety-guidelines/categories', methods=['GET'])
+@api_bp.route('/v1/safety-guidelines/categories', methods=['GET'])
 def get_safety_categories():
     """获取安全须知类别列表"""
     try:

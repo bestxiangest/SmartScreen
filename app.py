@@ -6,6 +6,7 @@
 
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
+from app.extensions import db, jwt
 import os
 
 # 创建Flask应用
@@ -19,14 +20,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 
 # 初始化扩展
-from app import db, jwt
 db.init_app(app)
 jwt.init_app(app)
 CORS(app, origins=['*'])
 
 # 注册API蓝图
 from app.api import api_bp
-app.register_blueprint(api_bp, url_prefix='/api/v1')
+app.register_blueprint(api_bp, url_prefix='/api')
 
 # 创建数据库表
 with app.app_context():
@@ -36,6 +36,11 @@ with app.app_context():
 @app.route('/')
 def index():
     """主页"""
+    return render_template('login.html')
+
+@app.route('/dashboard')
+def dashboard():
+    """管理后台主页"""
     return render_template('index.html')
 
 @app.route('/login')

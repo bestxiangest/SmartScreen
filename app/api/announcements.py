@@ -8,11 +8,11 @@ from flask import request
 from flask_jwt_extended import jwt_required
 from app.api import api_bp
 from app.models import Announcement
-from app import db
+from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime
 
-@api_bp.route('/announcements', methods=['GET'])
+@api_bp.route('/v1/announcements', methods=['GET'])
 def get_announcements():
     """获取通知公告列表"""
     try:
@@ -49,7 +49,7 @@ def get_announcements():
     except Exception as e:
         return api_error(f"获取通知公告列表失败: {str(e)}", 500)
 
-@api_bp.route('/announcements', methods=['POST'])
+@api_bp.route('/v1/announcements', methods=['POST'])
 @jwt_required()
 def create_announcement():
     """创建通知公告"""
@@ -88,7 +88,7 @@ def create_announcement():
         db.session.rollback()
         return api_error(f"创建通知公告失败: {str(e)}", 500)
 
-@api_bp.route('/announcements/<int:announcement_id>', methods=['GET'])
+@api_bp.route('/v1/announcements/<int:announcement_id>', methods=['GET'])
 def get_announcement(announcement_id):
     """获取单个通知公告详情"""
     try:
@@ -102,7 +102,7 @@ def get_announcement(announcement_id):
     except Exception as e:
         return api_error(f"获取通知公告详情失败: {str(e)}", 500)
 
-@api_bp.route('/announcements/<int:announcement_id>', methods=['PUT'])
+@api_bp.route('/v1/announcements/<int:announcement_id>', methods=['PUT'])
 @jwt_required()
 def update_announcement(announcement_id):
     """更新通知公告"""
@@ -137,7 +137,7 @@ def update_announcement(announcement_id):
         db.session.rollback()
         return api_error(f"更新通知公告失败: {str(e)}", 500)
 
-@api_bp.route('/announcements/<int:announcement_id>', methods=['DELETE'])
+@api_bp.route('/v1/announcements/<int:announcement_id>', methods=['DELETE'])
 @jwt_required()
 def delete_announcement(announcement_id):
     """删除通知公告"""

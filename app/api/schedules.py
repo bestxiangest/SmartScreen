@@ -8,11 +8,11 @@ from flask import request
 from flask_jwt_extended import jwt_required
 from app.api import api_bp
 from app.models import Schedule
-from app import db
+from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime, time
 
-@api_bp.route('/schedules', methods=['GET'])
+@api_bp.route('/v1/schedules', methods=['GET'])
 def get_schedules():
     """获取课程表列表"""
     try:
@@ -47,7 +47,7 @@ def get_schedules():
     except Exception as e:
         return api_error(f"获取课程表列表失败: {str(e)}", 500)
 
-@api_bp.route('/schedules', methods=['POST'])
+@api_bp.route('/v1/schedules', methods=['POST'])
 @jwt_required()
 def create_schedule():
     """创建课程安排"""
@@ -112,7 +112,7 @@ def create_schedule():
         db.session.rollback()
         return api_error(f"创建课程安排失败: {str(e)}", 500)
 
-@api_bp.route('/schedules/<int:schedule_id>', methods=['GET'])
+@api_bp.route('/v1/schedules/<int:schedule_id>', methods=['GET'])
 def get_schedule(schedule_id):
     """获取单个课程安排详情"""
     try:
@@ -126,7 +126,7 @@ def get_schedule(schedule_id):
     except Exception as e:
         return api_error(f"获取课程安排详情失败: {str(e)}", 500)
 
-@api_bp.route('/schedules/<int:schedule_id>', methods=['PUT'])
+@api_bp.route('/v1/schedules/<int:schedule_id>', methods=['PUT'])
 @jwt_required()
 def update_schedule(schedule_id):
     """更新课程安排"""
@@ -198,7 +198,7 @@ def update_schedule(schedule_id):
         db.session.rollback()
         return api_error(f"更新课程安排失败: {str(e)}", 500)
 
-@api_bp.route('/schedules/<int:schedule_id>', methods=['DELETE'])
+@api_bp.route('/v1/schedules/<int:schedule_id>', methods=['DELETE'])
 @jwt_required()
 def delete_schedule(schedule_id):
     """删除课程安排"""
@@ -217,7 +217,7 @@ def delete_schedule(schedule_id):
         db.session.rollback()
         return api_error(f"删除课程安排失败: {str(e)}", 500)
 
-@api_bp.route('/schedules/today', methods=['GET'])
+@api_bp.route('/v1/schedules/today', methods=['GET'])
 def get_today_schedules():
     """获取今日课程安排"""
     try:

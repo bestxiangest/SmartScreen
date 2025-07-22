@@ -34,7 +34,7 @@ def login():
         
         # 创建JWT令牌
         access_token = create_access_token(
-            identity=user.id,
+            identity=str(user.id),
             expires_delta=timedelta(hours=24)
         )
         
@@ -53,7 +53,7 @@ def login():
 def get_profile():
     """获取当前用户信息"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         user = User.query.get(current_user_id)
         
         if not user:
@@ -69,11 +69,11 @@ def get_profile():
 def refresh_token():
     """刷新JWT令牌"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         
         # 创建新的访问令牌
         new_token = create_access_token(
-            identity=current_user_id,
+            identity=str(current_user_id),
             expires_delta=timedelta(hours=24)
         )
         

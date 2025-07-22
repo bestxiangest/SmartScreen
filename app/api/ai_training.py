@@ -8,11 +8,11 @@ from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api import api_bp
 from app.models import AITrainingPlan, User
-from app import db
+from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 import json
 
-@api_bp.route('/ai-training-plans', methods=['GET'])
+@api_bp.route('/v1/ai-training-plans', methods=['GET'])
 @jwt_required()
 def get_ai_training_plans():
     """获取AI培养方案列表"""
@@ -52,7 +52,7 @@ def get_ai_training_plans():
     except Exception as e:
         return api_error(f"获取AI培养方案列表失败: {str(e)}", 500)
 
-@api_bp.route('/ai-training-plans', methods=['POST'])
+@api_bp.route('/v1/ai-training-plans', methods=['POST'])
 @jwt_required()
 def create_ai_training_plan():
     """创建AI培养方案"""
@@ -67,7 +67,7 @@ def create_ai_training_plan():
             return api_error("培养方案内容不能为空", 400)
         
         # 获取目标用户ID，如果没有指定则为当前用户
-        target_user_id = data.get('user_id', get_jwt_identity())
+        target_user_id = data.get('user_id', int(get_jwt_identity()))
         
         # 验证用户是否存在
         user = User.query.get(target_user_id)
@@ -104,7 +104,7 @@ def create_ai_training_plan():
         db.session.rollback()
         return api_error(f"创建AI培养方案失败: {str(e)}", 500)
 
-@api_bp.route('/ai-training-plans/<int:plan_id>', methods=['GET'])
+@api_bp.route('/v1/ai-training-plans/<int:plan_id>', methods=['GET'])
 @jwt_required()
 def get_ai_training_plan(plan_id):
     """获取单个AI培养方案详情"""
@@ -119,7 +119,7 @@ def get_ai_training_plan(plan_id):
     except Exception as e:
         return api_error(f"获取AI培养方案详情失败: {str(e)}", 500)
 
-@api_bp.route('/ai-training-plans/<int:plan_id>', methods=['PUT'])
+@api_bp.route('/v1/ai-training-plans/<int:plan_id>', methods=['PUT'])
 @jwt_required()
 def update_ai_training_plan(plan_id):
     """更新AI培养方案"""
@@ -164,7 +164,7 @@ def update_ai_training_plan(plan_id):
         db.session.rollback()
         return api_error(f"更新AI培养方案失败: {str(e)}", 500)
 
-@api_bp.route('/ai-training-plans/<int:plan_id>', methods=['DELETE'])
+@api_bp.route('/v1/ai-training-plans/<int:plan_id>', methods=['DELETE'])
 @jwt_required()
 def delete_ai_training_plan(plan_id):
     """删除AI培养方案"""
@@ -183,12 +183,12 @@ def delete_ai_training_plan(plan_id):
         db.session.rollback()
         return api_error(f"删除AI培养方案失败: {str(e)}", 500)
 
-@api_bp.route('/ai-training-plans/my-plans', methods=['GET'])
+@api_bp.route('/v1/ai-training-plans/my-plans', methods=['GET'])
 @jwt_required()
 def get_my_training_plans():
     """获取当前用户的培养方案"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         
         plans = AITrainingPlan.query.filter(
             AITrainingPlan.user_id == current_user_id
@@ -201,13 +201,13 @@ def get_my_training_plans():
     except Exception as e:
         return api_error(f"获取我的培养方案失败: {str(e)}", 500)
 
-@api_bp.route('/ai-training-plans/generate', methods=['POST'])
+@api_bp.route('/v1/ai-training-plans/generate', methods=['POST'])
 @jwt_required()
 def generate_ai_training_plan():
     """AI生成个性化培养方案"""
     try:
         data = request.get_json() or {}
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         
         # 获取用户信息
         user = User.query.get(current_user_id)

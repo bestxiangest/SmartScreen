@@ -8,11 +8,11 @@ from flask import request
 from flask_jwt_extended import jwt_required
 from app.api import api_bp
 from app.models import Project, ProjectMember, User
-from app import db
+from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime
 
-@api_bp.route('/projects', methods=['GET'])
+@api_bp.route('/v1/projects', methods=['GET'])
 def get_projects():
     """获取项目成果列表"""
     try:
@@ -43,7 +43,7 @@ def get_projects():
     except Exception as e:
         return api_error(f"获取项目成果列表失败: {str(e)}", 500)
 
-@api_bp.route('/projects', methods=['POST'])
+@api_bp.route('/v1/projects', methods=['POST'])
 @jwt_required()
 def create_project():
     """创建项目成果"""
@@ -122,7 +122,7 @@ def create_project():
         db.session.rollback()
         return api_error(f"创建项目成果失败: {str(e)}", 500)
 
-@api_bp.route('/projects/<int:project_id>', methods=['GET'])
+@api_bp.route('/v1/projects/<int:project_id>', methods=['GET'])
 def get_project(project_id):
     """获取单个项目成果详情"""
     try:
@@ -136,7 +136,7 @@ def get_project(project_id):
     except Exception as e:
         return api_error(f"获取项目成果详情失败: {str(e)}", 500)
 
-@api_bp.route('/projects/<int:project_id>', methods=['PUT'])
+@api_bp.route('/v1/projects/<int:project_id>', methods=['PUT'])
 @jwt_required()
 def update_project(project_id):
     """更新项目成果"""
@@ -210,7 +210,7 @@ def update_project(project_id):
         db.session.rollback()
         return api_error(f"更新项目成果失败: {str(e)}", 500)
 
-@api_bp.route('/projects/<int:project_id>', methods=['DELETE'])
+@api_bp.route('/v1/projects/<int:project_id>', methods=['DELETE'])
 @jwt_required()
 def delete_project(project_id):
     """删除项目成果"""

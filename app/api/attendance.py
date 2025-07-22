@@ -8,7 +8,7 @@ from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api import api_bp
 from app.models import AttendanceLog, User
-from app import db
+from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime, date
 import hashlib
@@ -17,7 +17,7 @@ import qrcode
 import io
 import base64
 
-@api_bp.route('/attendance', methods=['GET'])
+@api_bp.route('/v1/attendance', methods=['GET'])
 @jwt_required()
 def get_attendance_logs():
     """获取考勤记录列表"""
@@ -68,12 +68,12 @@ def get_attendance_logs():
     except Exception as e:
         return api_error(f"获取考勤记录列表失败: {str(e)}", 500)
 
-@api_bp.route('/attendance/check-in', methods=['POST'])
+@api_bp.route('/v1/attendance/check-in', methods=['POST'])
 @jwt_required()
 def check_in():
     """签到"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         data = request.get_json() or {}
         
         # 验证考勤方式
@@ -108,12 +108,12 @@ def check_in():
         db.session.rollback()
         return api_error(f"签到失败: {str(e)}", 500)
 
-@api_bp.route('/attendance/<int:log_id>/check-out', methods=['PUT'])
+@api_bp.route('/v1/attendance/<int:log_id>/check-out', methods=['PUT'])
 @jwt_required()
 def check_out(log_id):
     """签出"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         
         # 查找签到记录
         attendance_log = AttendanceLog.query.get(log_id)
@@ -140,12 +140,12 @@ def check_out(log_id):
         db.session.rollback()
         return api_error(f"签出失败: {str(e)}", 500)
 
-@api_bp.route('/attendance/today', methods=['GET'])
+@api_bp.route('/v1/attendance/today', methods=['GET'])
 @jwt_required()
 def get_today_attendance():
     """获取今日考勤状态"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         today = date.today()
         
         # 查找今日考勤记录
@@ -162,7 +162,7 @@ def get_today_attendance():
     except Exception as e:
         return api_error(f"获取今日考勤状态失败: {str(e)}", 500)
 
-@api_bp.route('/attendance/statistics', methods=['GET'])
+@api_bp.route('/v1/attendance/statistics', methods=['GET'])
 @jwt_required()
 def get_attendance_statistics():
     """获取考勤统计"""
@@ -174,7 +174,7 @@ def get_attendance_statistics():
         
         # 如果没有指定用户，则统计当前用户
         if not user_id:
-            user_id = get_jwt_identity()
+            user_id = int(get_jwt_identity())
         
         # 构建查询
         query = AttendanceLog.query.filter(AttendanceLog.user_id == user_id)
@@ -236,7 +236,7 @@ def get_attendance_statistics():
     except Exception as e:
         return api_error(f"获取考勤统计失败: {str(e)}", 500)
 
-@api_bp.route('/attendance/<int:log_id>', methods=['DELETE'])
+@api_bp.route('/v1/attendance/<int:log_id>', methods=['DELETE'])
 @jwt_required()
 def delete_attendance_log(log_id):
     """删除考勤记录（管理员功能）"""
@@ -255,7 +255,7 @@ def delete_attendance_log(log_id):
         db.session.rollback()
         return api_error(f"删除考勤记录失败: {str(e)}", 500)
 
-@api_bp.route('/attendance/qr-code', methods=['GET'])
+@api_bp.route('/v1/attendance/qr-code', methods=['GET'])
 def generate_qr_code():
     """生成每日二维码"""
     try:
@@ -302,7 +302,7 @@ def generate_qr_code():
     except Exception as e:
         return api_error(f"生成二维码失败: {str(e)}", 500)
 
-@api_bp.route('/attendance/qr-code-url', methods=['POST'])
+@api_bp.route('/v1/attendance/qr-code-url', methods=['POST'])
 def generate_qr_code_with_url():
     """生成包含URL的二维码"""
     try:
@@ -355,16 +355,21 @@ def generate_qr_code_with_url():
         return api_error(f"生成二维码失败: {str(e)}", 500)
 
 
-@api_bp.route('/attendance/qr-checkin', methods=['POST'])
+@api_bp.route('/v1/attendance/qr-checkin', methods=['POST'])
 def qr_code_checkin():
     """二维码签到（无需JWT认证）"""
     try:
         data = request.get_json() or {}
         
+        # 记录接收到的数据用于调试
+        print(f"[DEBUG] 接收到的签到数据: {data}")
+        
         # 获取参数
         token = data.get('token')
         user_name = data.get('user_name', '').strip()
         emotion_status = data.get('emotion_status')
+        
+        print(f"[DEBUG] 解析后的参数 - token: {token}, user_name: '{user_name}', emotion_status: {emotion_status}")
         
         if not token:
             return api_error("缺少二维码token", 400)
@@ -382,9 +387,21 @@ def qr_code_checkin():
             return api_error("二维码已过期或无效", 400)
         
         # 根据姓名查找用户
+        print(f"[DEBUG] 正在查找用户，姓名: '{user_name}', 长度: {len(user_name)}")
         user = User.query.filter_by(full_name=user_name).first()
+        
         if not user:
+            # 查找所有相似的用户名用于调试
+            similar_users = User.query.filter(User.full_name.like(f'%{user_name}%')).all()
+            print(f"[DEBUG] 未找到精确匹配的用户，相似用户: {[(u.id, u.full_name, len(u.full_name)) for u in similar_users]}")
+            
+            # 查找所有用户用于调试
+            all_users = User.query.all()
+            print(f"[DEBUG] 数据库中所有用户: {[(u.id, u.full_name) for u in all_users]}")
+            
             return api_error("用户不存在，请检查姓名是否正确", 404)
+        
+        print(f"[DEBUG] 找到用户: ID={user.id}, 姓名='{user.full_name}'")
         
         # 检查今日是否已签到
         today_date = date.today()
