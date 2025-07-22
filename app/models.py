@@ -30,7 +30,7 @@ class User(db.Model):
     
     def set_password(self, password):
         """设置密码"""
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password, method='scrypt')
     
     def check_password(self, password):
         """验证密码"""

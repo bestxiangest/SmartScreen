@@ -100,7 +100,7 @@ def create_user():
         # 创建用户
         user = User(
             username=data['username'],
-            password_hash=generate_password_hash(data['password']),
+            password_hash=generate_password_hash(data['password'], method='scrypt'),
             full_name=data['full_name'],
             email=data.get('email'),
             phone_number=data.get('phone_number')
@@ -181,7 +181,7 @@ def update_user(user_id):
         
         # 更新密码（如果提供）
         if 'password' in data and data['password']:
-            user.password_hash = generate_password_hash(data['password'])
+            user.password_hash = generate_password_hash(data['password'], method='scrypt')
         
         # 处理角色更新
         if 'role_ids' in data:
@@ -228,6 +228,10 @@ def delete_user(user_id):
         current_user_id = int(get_jwt_identity())
         if user_id == current_user_id:
             return api_error("不能删除当前登录用户", 400)
+        
+        # 删除相关的考勤记录
+        from app.models import AttendanceLog
+        AttendanceLog.query.filter_by(user_id=user_id).delete()
         
         # 删除用户角色关联
         UserRole.query.filter_by(user_id=user_id).delete()

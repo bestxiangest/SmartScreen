@@ -11,6 +11,32 @@ from flask_cors import CORS
 from config import config
 import os
 
+# 修复JWT HMAC digestmod问题
+def patch_jwt_hmac():
+    """修复Flask-JWT-Extended在某些环境下的HMAC digestmod问题"""
+    try:
+        import hmac
+        import hashlib
+        
+        # 保存原始的hmac.new函数
+        original_hmac_new = hmac.new
+        
+        def patched_hmac_new(key, msg=None, digestmod=None):
+            """确保HMAC调用时总是包含digestmod参数"""
+            if digestmod is None:
+                digestmod = hashlib.sha256
+            return original_hmac_new(key, msg, digestmod)
+        
+        # 替换hmac.new函数
+        hmac.new = patched_hmac_new
+        
+    except Exception:
+        # 如果补丁失败，静默忽略，让应用继续运行
+        pass
+
+# 在导入JWT相关模块之前应用补丁
+patch_jwt_hmac()
+
 # 初始化扩展
 db = SQLAlchemy()
 jwt = JWTManager()

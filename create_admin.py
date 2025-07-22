@@ -30,14 +30,14 @@ def create_admin_user():
             if existing_admin:
                 print("管理员用户已存在！")
                 print(f"用户名: {existing_admin.username}")
-                print(f"真实姓名: {existing_admin.real_name}")
+                print(f"真实姓名: {existing_admin.full_name}")
                 print(f"创建时间: {existing_admin.created_at}")
                 
                 # 询问是否重置密码
                 reset = input("是否重置管理员密码？(y/N): ").lower().strip()
                 if reset == 'y':
                     new_password = input("请输入新密码 (默认: admin123): ").strip() or 'admin123'
-                    existing_admin.password_hash = generate_password_hash(new_password)
+                    existing_admin.password_hash = generate_password_hash(new_password, method='scrypt')
                     db.session.commit()
                     print(f"管理员密码已重置为: {new_password}")
                 return
@@ -69,7 +69,7 @@ def create_admin_user():
             # 创建管理员用户
             admin_user = User(
                 username=username,
-                password_hash=generate_password_hash(password),
+                password_hash=generate_password_hash(password, method='scrypt'),
                 full_name=real_name,
                 email=email,
                 phone_number=phone  # 使用正确的字段名phone_number
