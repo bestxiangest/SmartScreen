@@ -43,6 +43,21 @@ def login():
     """登录页面"""
     return render_template('login.html')
 
+@app.route('/qr-display')
+def qr_display_page():
+    """二维码显示页面"""
+    return render_template('qr_display.html')
+
+@app.route('/checkin')
+def checkin_form_page():
+    """签到表单页面"""
+    return render_template('checkin_form.html')
+
+@app.route('/qr-checkin')
+def qr_checkin_page():
+    """二维码签到页面（保持兼容性）"""
+    return render_template('qr_checkin.html')
+
 @app.route('/health')
 def health_check():
     """健康检查"""

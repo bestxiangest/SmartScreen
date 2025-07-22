@@ -11,6 +11,11 @@ from app.models import AttendanceLog, User
 from app import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime, date
+import hashlib
+import json
+import qrcode
+import io
+import base64
 
 @api_bp.route('/attendance', methods=['GET'])
 @jwt_required()
@@ -249,3 +254,164 @@ def delete_attendance_log(log_id):
     except Exception as e:
         db.session.rollback()
         return api_error(f"删除考勤记录失败: {str(e)}", 500)
+
+@api_bp.route('/attendance/qr-code', methods=['GET'])
+def generate_qr_code():
+    """生成每日二维码"""
+    try:
+        # 获取当前日期
+        today = date.today().isoformat()
+        
+        # 生成每日唯一的token
+        secret_key = "smartscreen_attendance_2024"  # 应该从配置文件读取
+        token_data = f"{today}_{secret_key}"
+        daily_token = hashlib.sha256(token_data.encode()).hexdigest()[:16]
+        
+        # 构建二维码数据
+        qr_data = {
+            "type": "attendance_checkin",
+            "date": today,
+            "token": daily_token
+        }
+        
+        # 生成二维码
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(json.dumps(qr_data))
+        qr.make(fit=True)
+        
+        # 创建二维码图片
+        img = qr.make_image(fill_color="black", back_color="white")
+        
+        # 转换为base64
+        img_buffer = io.BytesIO()
+        img.save(img_buffer, format='PNG')
+        img_str = base64.b64encode(img_buffer.getvalue()).decode()
+        
+        return api_success(data={
+            "qr_code_image": f"data:image/png;base64,{img_str}",
+            "token": daily_token,
+            "date": today,
+            "expires_at": f"{today} 23:59:59"
+        }, message="生成二维码成功")
+        
+    except Exception as e:
+        return api_error(f"生成二维码失败: {str(e)}", 500)
+
+@api_bp.route('/attendance/qr-code-url', methods=['POST'])
+def generate_qr_code_with_url():
+    """生成包含URL的二维码"""
+    try:
+        data = request.get_json() or {}
+        url = data.get('url')
+        token = data.get('token')
+        date_str = data.get('date')
+        
+        if not url or not token or not date_str:
+            return api_error("缺少必要参数", 400)
+        
+        # 验证token是否有效
+        today = date.today().isoformat()
+        if date_str != today:
+            return api_error("日期无效", 400)
+            
+        secret_key = "smartscreen_attendance_2024"
+        token_data = f"{today}_{secret_key}"
+        valid_token = hashlib.sha256(token_data.encode()).hexdigest()[:16]
+        
+        if token != valid_token:
+            return api_error("token无效", 400)
+        
+        # 生成包含URL的二维码
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(url)
+        qr.make(fit=True)
+        
+        # 创建二维码图片
+        img = qr.make_image(fill_color="black", back_color="white")
+        
+        # 转换为base64
+        img_buffer = io.BytesIO()
+        img.save(img_buffer, format='PNG')
+        img_str = base64.b64encode(img_buffer.getvalue()).decode()
+        
+        return api_success(data={
+            "qr_code_image": f"data:image/png;base64,{img_str}",
+            "url": url,
+            "token": token,
+            "date": date_str
+        }, message="生成URL二维码成功")
+        
+    except Exception as e:
+        return api_error(f"生成二维码失败: {str(e)}", 500)
+
+
+@api_bp.route('/attendance/qr-checkin', methods=['POST'])
+def qr_code_checkin():
+    """二维码签到（无需JWT认证）"""
+    try:
+        data = request.get_json() or {}
+        
+        # 获取参数
+        token = data.get('token')
+        user_name = data.get('user_name', '').strip()
+        emotion_status = data.get('emotion_status')
+        
+        if not token:
+            return api_error("缺少二维码token", 400)
+        
+        if not user_name:
+            return api_error("请填写姓名", 400)
+        
+        # 验证token是否为今日有效token
+        today = date.today().isoformat()
+        secret_key = "smartscreen_attendance_2024"
+        token_data = f"{today}_{secret_key}"
+        valid_token = hashlib.sha256(token_data.encode()).hexdigest()[:16]
+        
+        if token != valid_token:
+            return api_error("二维码已过期或无效", 400)
+        
+        # 根据姓名查找用户
+        user = User.query.filter_by(full_name=user_name).first()
+        if not user:
+            return api_error("用户不存在，请检查姓名是否正确", 404)
+        
+        # 检查今日是否已签到
+        today_date = date.today()
+        existing_log = AttendanceLog.query.filter(
+            AttendanceLog.user_id == user.id,
+            db.func.date(AttendanceLog.check_in_time) == today_date
+        ).first()
+        
+        if existing_log:
+            return api_error("今日已签到", 400)
+        
+        # 创建签到记录
+        attendance_log = AttendanceLog(
+            user_id=user.id,
+            method='扫码',
+            emotion_status=emotion_status
+        )
+        
+        db.session.add(attendance_log)
+        db.session.commit()
+        
+        return api_success(data={
+            "user_name": user.full_name,
+            "check_in_time": attendance_log.check_in_time.isoformat(),
+            "method": "扫码"
+        }, message=f"{user.full_name} 签到成功", code=201)
+        
+    except Exception as e:
+        db.session.rollback()
+        return api_error(f"签到失败: {str(e)}", 500)

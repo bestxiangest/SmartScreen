@@ -5,7 +5,7 @@
 """
 
 import os
-from flask import Blueprint, send_from_directory, current_app, jsonify
+from flask import Blueprint, send_from_directory, current_app, jsonify, render_template
 
 main_bp = Blueprint('main', __name__)
 
@@ -47,3 +47,13 @@ def favicon():
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon'
     )
+
+@main_bp.route('/qr-checkin')
+def qr_checkin_page():
+    """二维码签到页面"""
+    return render_template('qr_checkin.html')
+
+@main_bp.route('/dashboard')
+def dashboard():
+    """主控制台页面"""
+    return render_template('index.html')

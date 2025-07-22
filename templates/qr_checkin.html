@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码签到 - 智慧实验室</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .qr-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px dashed #e9ecef;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+
+        .qr-code img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+        }
+
+        .qr-info {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .form-section {
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .qr-code {
+                width: 180px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">智</div>
+            <h1>二维码签到</h1>
+            <p class="subtitle">智慧实验室考勤系统</p>
+        </div>
+
+        <div class="qr-section">
+            <div class="qr-code" id="qrCode">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            <div class="qr-info">
+                <p>二维码每日更新，请使用今日二维码签到</p>
+                <p id="qrDate">生成时间: --</p>
+            </div>
+            <button class="refresh-btn" onclick="generateQRCode()">刷新二维码</button>
+        </div>
+
+        <div class="form-section">
+            <form id="checkinForm">
+                <div class="form-group">
+                    <label for="userName">姓名 *</label>
+                    <input type="text" id="userName" name="userName" placeholder="请输入您的真实姓名" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="emotionStatus">心情状态</label>
+                    <select id="emotionStatus" name="emotionStatus">
+                        <option value="">请选择当前心情</option>
+                        <option value="开心">😊 开心</option>
+                        <option value="平静">😌 平静</option>
+                        <option value="专注">🤔 专注</option>
+                        <option value="疲惫">😴 疲惫</option>
+                        <option value="兴奋">🤩 兴奋</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">确认签到</button>
+            </form>
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <div class="footer">
+            <p>© 2024 智慧实验室电子班牌系统</p>
+        </div>
+    </div>
+
+    <script>
+        let currentToken = null;
+
+        // 页面加载时生成二维码
+        document.addEventListener('DOMContentLoaded', function() {
+            generateQRCode();
+        });
+
+        // 生成二维码
+        async function generateQRCode() {
+            const qrCodeDiv = document.getElementById('qrCode');
+            const qrDateDiv = document.getElementById('qrDate');
+            const loading = qrCodeDiv.querySelector('.loading');
+            
+            // 显示加载状态
+            qrCodeDiv.innerHTML = '<div class="loading" style="display: block;"><div class="spinner"></div></div>';
+            
+            try {
+                const response = await fetch('/api/v1/attendance/qr-code');
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentToken = result.data.token;
+                    qrCodeDiv.innerHTML = `<img src="${result.data.qr_code_image}" alt="签到二维码">`;
+                    qrDateDiv.textContent = `生成时间: ${result.data.date} (有效期至当日23:59)`;
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                qrCodeDiv.innerHTML = '<p style="color: #dc3545;">二维码生成失败</p>';
+                showMessage('生成二维码失败: ' + error.message, 'error');
+            }
+        }
+
+        // 处理签到表单提交
+        document.getElementById('checkinForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userName = document.getElementById('userName').value.trim();
+            const emotionStatus = document.getElementById('emotionStatus').value;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (!userName) {
+                showMessage('请输入姓名', 'error');
+                return;
+            }
+            
+            if (!currentToken) {
+                showMessage('请先生成二维码', 'error');
+                return;
+            }
+            
+            // 禁用提交按钮
+            submitBtn.disabled = true;
+            submitBtn.textContent = '签到中...';
+            
+            try {
+                const response = await fetch('/api/v1/attendance/qr-checkin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: currentToken,
+                        user_name: userName,
+                        emotion_status: emotionStatus
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`${result.message}！签到时间: ${new Date(result.data.check_in_time).toLocaleString()}`, 'success');
+                    // 清空表单
+                    document.getElementById('checkinForm').reset();
+                } else {
+                    showMessage(result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('签到失败: ' + error.message, 'error');
+            } finally {
+                // 恢复提交按钮
+                submitBtn.disabled = false;
+                submitBtn.textContent = '确认签到';
+            }
+        });
+
+        // 显示消息
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // 每小时自动刷新二维码
+        setInterval(generateQRCode, 60 * 60 * 1000);
+    </script>
+</body>
+</html>
