@@ -1095,7 +1095,7 @@
                 }
             } else {
                 // 未登录，跳转到登录页面
-                window.location.href = '/templates/login.html';
+                window.location.href = '/login';
                 return false;
             }
             return true;
@@ -1186,7 +1186,7 @@
         async function loadAnnouncements() {
             try {
                 const response = await apiRequest('/announcements?limit=50');
-                announcements = response.data.list;
+                announcements = response.data.items || [];
                 renderAnnouncements();
             } catch (error) {
                 console.error('加载消息通知失败:', error);
@@ -1317,7 +1317,7 @@
         async function loadProjects() {
             try {
                 const response = await apiRequest('/projects?limit=50');
-                projects = response.data.list;
+                projects = response.data.items || [];
                 renderProjects();
             } catch (error) {
                 console.error('加载项目列表失败:', error);
@@ -1510,7 +1510,7 @@
         async function loadSchedules() {
             try {
                 const response = await apiRequest('/schedules');
-                schedules = response.data.list || [];
+                schedules = response.data.items || [];
                 renderScheduleTable();
             } catch (error) {
                 console.error('加载课程表失败:', error);

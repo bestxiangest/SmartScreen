@@ -28,8 +28,8 @@ def get_projects():
         if achievement_type:
             query = query.filter(Project.achievement_type == achievement_type)
         
-        # 按项目开始日期倒序排列
-        query = query.order_by(Project.start_date.desc().nullslast())
+        # 按项目开始日期倒序排列（MySQL兼容）
+        query = query.order_by(Project.start_date.desc())
         
         # 分页查询
         total = query.count()

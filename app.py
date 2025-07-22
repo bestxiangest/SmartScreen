@@ -6,8 +6,6 @@
 
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
 import os
 
 # 创建Flask应用
@@ -16,18 +14,24 @@ app = Flask(__name__)
 # 基础配置
 app.config['SECRET_KEY'] = 'smartscreen-secret-key-2025'
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/smartscreen'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:zzn20041031@localhost:3306/smartscreen'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 
 # 初始化扩展
-db = SQLAlchemy(app)
-jwt = JWTManager(app)
+from app import db, jwt
+db.init_app(app)
+jwt.init_app(app)
 CORS(app, origins=['*'])
 
 # 注册API蓝图
 from app.api import api_bp
-app.register_blueprint(api_bp, url_prefix='/api')
+app.register_blueprint(api_bp, url_prefix='/api/v1')
+
+# 创建数据库表
+with app.app_context():
+    from app import models
+    db.create_all()
 
 @app.route('/')
 def index():
@@ -61,8 +65,8 @@ def api_test():
 
 if __name__ == '__main__':
     # 从环境变量获取配置
-    host = os.environ.get('FLASK_HOST', '0.0.0.0')
-    port = int(os.environ.get('FLASK_PORT', 5555))
+    host = os.environ.get('FLASK_HOST', '127.0.0.1')
+    port = int(os.environ.get('FLASK_PORT', 5000))
     debug = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     
     print(f"智慧实验室电子班牌系统启动中...")

@@ -241,7 +241,7 @@
                     
                     // 延迟跳转到主页面
                     setTimeout(() => {
-                        window.location.href = '/templates/index.html';
+                        window.location.href = '/';
                     }, 1500);
                 } else {
                     throw new Error(response.message || '登录失败');
@@ -287,7 +287,7 @@
             const token = localStorage.getItem('access_token');
             if (token) {
                 // 如果已有token，尝试验证并跳转
-                window.location.href = '/templates/index.html';
+                window.location.href = '/';
             }
         });
 
