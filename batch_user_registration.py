@@ -90,8 +90,11 @@ class BatchUserRegistration:
             user = User(
                 username=username,
                 full_name=str(user_data['full_name']).strip(),
+                major=str(user_data.get('major', '')).strip() or None,
+                class_name=str(user_data.get('class', '')).strip() or None,
                 email=str(user_data.get('email', '')).strip() or None,
-                phone_number=str(user_data.get('phone_number', '')).strip() or None
+                phone_number=str(user_data.get('phone_number', '')).strip() or None,
+                avatar_url=str(user_data.get('avatar_url', '')).strip() or None
             )
             
             # 设置密码
@@ -151,7 +154,7 @@ class BatchUserRegistration:
         print("=" * 40)
         print("输入用户信息，按回车继续下一个用户，输入 'quit' 结束")
         print("必填字段: 用户名、密码、真实姓名")
-        print("可选字段: 邮箱、手机号")
+        print("可选字段: 专业、班级、邮箱、手机号、头像URL")
         print()
         
         with self.app.app_context():
@@ -179,13 +182,28 @@ class BatchUserRegistration:
                 if phone_number.lower() == 'quit':
                     break
                 
+                major = input("专业 (可选): ").strip()
+                if major.lower() == 'quit':
+                    break
+                
+                class_name = input("班级 (可选): ").strip()
+                if class_name.lower() == 'quit':
+                    break
+                
+                avatar_url = input("头像URL (可选): ").strip()
+                if avatar_url.lower() == 'quit':
+                    break
+                
                 # 构建用户数据
                 user_data = {
                     'username': username,
                     'password': password,
                     'full_name': full_name,
+                    'major': major if major else None,
+                    'class': class_name if class_name else None,
                     'email': email if email else None,
-                    'phone_number': phone_number if phone_number else None
+                    'phone_number': phone_number if phone_number else None,
+                    'avatar_url': avatar_url if avatar_url else None
                 }
                 
                 # 创建用户
@@ -206,22 +224,31 @@ class BatchUserRegistration:
                 'username': 'student001',
                 'password': 'password123',
                 'full_name': '张三',
+                'major': '计算机科学与技术',
+                'class': '2023级1班',
                 'email': 'zhangsan@example.com',
-                'phone_number': '13800138001'
+                'phone_number': '13800138001',
+                'avatar_url': 'http://xxx.com/images/zhangsan.jpg'
             },
             {
                 'username': 'student002',
                 'password': 'password123',
                 'full_name': '李四',
+                'major': '物联网工程',
+                'class': '2023级2班',
                 'email': 'lisi@example.com',
-                'phone_number': '13800138002'
+                'phone_number': '13800138002',
+                'avatar_url': 'http://xxx.com/images/lisi.jpg'
             },
             {
                 'username': 'teacher001',
                 'password': 'teacher123',
                 'full_name': '王老师',
+                'major': '软件工程',
+                'class': '',
                 'email': 'wangteacher@example.com',
-                'phone_number': '13800138003'
+                'phone_number': '13800138003',
+                'avatar_url': 'http://xxx.com/images/wangteacher.jpg'
             }
         ]
         
@@ -229,8 +256,8 @@ class BatchUserRegistration:
         df.to_csv(file_path, index=False, encoding='utf-8')
         print(f"示例CSV文件已生成: {file_path}")
         print("CSV文件格式:")
-        print("username,password,full_name,email,phone_number")
-        print("student001,password123,张三,zhangsan@example.com,13800138001")
+        print("username,password,full_name,major,class,email,phone_number,avatar_url")
+        print("student001,password123,张三,计算机科学与技术,2023级1班,zhangsan@example.com,13800138001,http://xxx.com/images/zhangsan.jpg")
     
     def print_summary(self):
         """打印注册结果摘要"""

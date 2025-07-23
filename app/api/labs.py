@@ -145,7 +145,7 @@ def delete_lab(lab_id):
         db.session.rollback()
         return api_error(f"删除实验室信息失败: {str(e)}", 500)
 
-@api_bp.route('/v1/labs/default', methods=['GET'])
+@api_bp.route('/labs/default', methods=['GET'])
 def get_default_lab():
     """获取默认实验室信息（用于班牌显示）"""
     try:

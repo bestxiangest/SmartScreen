@@ -17,9 +17,12 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False, comment='用户名')
     password_hash = db.Column(db.String(255), nullable=False, comment='密码哈希')
     full_name = db.Column(db.String(100), nullable=False, comment='真实姓名')
+    major = db.Column(db.String(100), comment='专业')
+    class_name = db.Column('class', db.String(50), comment='班级')
     email = db.Column(db.String(100), comment='邮箱地址')
     phone_number = db.Column(db.String(20), comment='手机号码')
     face_data = db.Column(db.LargeBinary, comment='用于人脸识别的生物特征数据')
+    avatar_url = db.Column(db.String(255), comment='头像图片URL')
     created_at = db.Column(db.DateTime, default=datetime.utcnow, comment='创建时间')
     
     # 关系
@@ -42,9 +45,12 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'full_name': self.full_name,
+            'major': self.major,
+            'class': self.class_name,
             'email': self.email,
             'phone_number': self.phone_number,
             'face_data': self.face_data,
+            'avatar_url': self.avatar_url,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
 

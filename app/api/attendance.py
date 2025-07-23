@@ -108,6 +108,103 @@ def check_in():
         db.session.rollback()
         return api_error(f"签到失败: {str(e)}", 500)
 
+@api_bp.route('/attendance/admin/check-in', methods=['POST'])
+@jwt_required()
+def admin_check_in():
+    """管理员控制的签到"""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return api_error("请求数据不能为空", 400)
+        
+        # 验证必填字段
+        user_id = data.get('user_id')
+        if not user_id:
+            return api_error("用户ID不能为空", 400)
+        
+        # 验证用户是否存在
+        user = User.query.get(user_id)
+        if not user:
+            return api_error("用户不存在", 404)
+        
+        # 验证考勤方式
+        method = data.get('method', '手动')
+        valid_methods = ['人脸识别', '扫码', '手动']
+        if method not in valid_methods:
+            return api_error(f"无效的考勤方式，有效方式: {', '.join(valid_methods)}", 400)
+        
+        # 检查今日是否已签到
+        today = date.today()
+        existing_log = AttendanceLog.query.filter(
+            AttendanceLog.user_id == user_id,
+            db.func.date(AttendanceLog.check_in_time) == today
+        ).first()
+        
+        if existing_log:
+            return api_error(f"用户 {user.full_name} 今日已签到", 400)
+        
+        # 创建签到记录
+        attendance_log = AttendanceLog(
+            user_id=user_id,
+            method=method,
+            emotion_status=data.get('emotion_status')
+        )
+        
+        db.session.add(attendance_log)
+        db.session.commit()
+        
+        return api_success(data=attendance_log.to_dict(), message=f"管理员为 {user.full_name} 签到成功", code=201)
+        
+    except Exception as e:
+        db.session.rollback()
+        return api_error(f"管理员签到失败: {str(e)}", 500)
+
+@api_bp.route('/attendance/admin/check-out', methods=['POST'])
+@jwt_required()
+def admin_check_out():
+    """管理员控制的签退"""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return api_error("请求数据不能为空", 400)
+        
+        # 验证必填字段
+        user_id = data.get('user_id')
+        if not user_id:
+            return api_error("用户ID不能为空", 400)
+        
+        # 验证用户是否存在
+        user = User.query.get(user_id)
+        if not user:
+            return api_error("用户不存在", 404)
+        
+        # 查找今日签到记录
+        today = date.today()
+        attendance_log = AttendanceLog.query.filter(
+            AttendanceLog.user_id == user_id,
+            db.func.date(AttendanceLog.check_in_time) == today
+        ).first()
+        
+        if not attendance_log:
+            return api_error(f"用户 {user.full_name} 今日未签到，无法签退", 400)
+        
+        # 检查是否已签退
+        if attendance_log.check_out_time:
+            return api_error(f"用户 {user.full_name} 已签退", 400)
+        
+        # 更新签退时间
+        attendance_log.check_out_time = datetime.utcnow()
+        
+        db.session.commit()
+        
+        return api_success(data=attendance_log.to_dict(), message=f"管理员为 {user.full_name} 签退成功")
+        
+    except Exception as e:
+        db.session.rollback()
+        return api_error(f"管理员签退失败: {str(e)}", 500)
+
 @api_bp.route('/attendance/<int:log_id>/check-out', methods=['PUT'])
 @jwt_required()
 def check_out(log_id):

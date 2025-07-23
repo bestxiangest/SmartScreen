@@ -48,6 +48,14 @@ app.config['JWT_SECRET_KEY'] = 'jwt-secret-string-smartscreen'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 app.config['JWT_ALGORITHM'] = 'HS256'  # 显式指定JWT算法
 
+# 文件上传配置
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads')
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'}
+
+# 确保上传目录存在
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 # 初始化扩展
 db.init_app(app)
 jwt.init_app(app)
@@ -56,7 +64,7 @@ CORS(app, origins=['*'])
 # 注册蓝图
 from app.api import api_bp
 from app.main import main_bp
-app.register_blueprint(api_bp, url_prefix='/api')
+app.register_blueprint(api_bp, url_prefix='/api/v1')
 app.register_blueprint(main_bp)
 
 # 创建数据库表
@@ -102,7 +110,7 @@ def health_check():
         'message': '系统运行正常'
     })
 
-@app.route('/api/test') 
+@app.route('/api/v1/test') 
 def api_test():
     """API测试接口"""
     return jsonify({

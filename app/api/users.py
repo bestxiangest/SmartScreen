@@ -31,7 +31,6 @@ def get_users():
         
         # 获取筛选参数
         role_name = request.args.get('role')
-        status = request.args.get('status')
         search = request.args.get('search')  # 搜索用户名或姓名
         
         # 构建查询
@@ -40,10 +39,6 @@ def get_users():
         # 按角色筛选
         if role_name:
             query = query.join(UserRole).join(Role).filter(Role.role_name == role_name)
-        
-        # 按状态筛选
-        if status:
-            query = query.filter(User.status == status)
         
         # 搜索功能
         if search:
@@ -99,19 +94,18 @@ def create_user():
         if User.query.filter_by(username=data['username']).first():
             return api_error("用户名已存在", 400)
         
-        # 验证状态
-        valid_statuses = ['激活', '禁用']
-        status = data.get('status', '激活')
-        if status not in valid_statuses:
-            return api_error(f"无效的状态值，有效值: {', '.join(valid_statuses)}", 400)
+        # 注意：User模型中暂时没有status字段，如需要可以后续添加
         
         # 创建用户
         user = User(
             username=data['username'],
             password_hash=generate_password_hash(data['password'], method='scrypt'),
             full_name=data['full_name'],
+            major=data.get('major'),
+            class_name=data.get('class'),
             email=data.get('email'),
-            phone_number=data.get('phone_number')
+            phone_number=data.get('phone_number'),
+            avatar_url=data.get('avatar_url')
         )
         
         db.session.add(user)
@@ -182,10 +176,17 @@ def update_user(user_id):
                 return api_error("用户名已存在", 400)
         
         # 更新基本信息
-        updatable_fields = ['username', 'full_name', 'email', 'phone_number']
+        updatable_fields = ['username', 'full_name', 'major', 'email', 'phone_number', 'avatar_url']
         for field in updatable_fields:
             if field in data:
-                setattr(user, field, data[field])
+                if field == 'class':
+                    setattr(user, 'class_name', data[field])
+                else:
+                    setattr(user, field, data[field])
+        
+        # 特殊处理class字段
+        if 'class' in data:
+            user.class_name = data['class']
         
         # 更新密码（如果提供）
         if 'password' in data and data['password']:

@@ -12,7 +12,7 @@ def test_routes():
     
     routes_to_test = [
         '/health',
-        '/api/test',
+        '/api/v1/test',
         '/api/v1/auth/login',
         '/api/v1/roles',
         '/api/v1/users'

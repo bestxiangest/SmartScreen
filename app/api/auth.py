@@ -7,7 +7,7 @@
 from flask import request
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app.api import api_bp
-from app.models import User
+from app.models import User, Role, UserRole
 from app.helpers.responses import api_success, api_error
 from datetime import timedelta
 
@@ -59,7 +59,15 @@ def get_profile():
         if not user:
             return api_error("用户不存在", 404)
         
-        return api_success(data=user.to_dict(), message="获取用户信息成功")
+        # 获取用户信息
+        user_dict = user.to_dict()
+        
+        # 获取用户角色信息
+        from app.extensions import db
+        roles = db.session.query(Role).join(UserRole).filter(UserRole.user_id == user.id).all()
+        user_dict['roles'] = [role.to_dict() for role in roles]
+        
+        return api_success(data=user_dict, message="获取用户信息成功")
         
     except Exception as e:
         return api_error(f"获取用户信息失败: {str(e)}", 500)
