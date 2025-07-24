@@ -13,13 +13,15 @@
 1. [基础接口](#基础接口)
 2. [认证模块](#认证模块)
 3. [用户管理](#用户管理)
-4. [通知公告](#通知公告)
-5. [考勤管理](#考勤管理)
-6. [实验室信息](#实验室信息)
-7. [设备管理](#设备管理)
-8. [课程表管理](#课程表管理)
-9. [安全须知](#安全须知)
-10. [项目成果](#项目成果)
+4. [角色管理](#角色管理)
+5. [通知公告](#通知公告)
+6. [考勤管理](#考勤管理)
+7. [实验室信息](#实验室信息)
+8. [设备管理](#设备管理)
+9. [课程表管理](#课程表管理)
+10. [安全须知](#安全须知)
+11. [项目成果](#项目成果)
+12. [用户个人资料](#用户个人资料)
 
 ---
 
@@ -332,6 +334,212 @@ curl -X PUT "http://localhost:5000/api/v1/users/12" \
 	"success": true
 }
 ```
+---
+
+## 角色管理
+
+### 1. 获取角色列表
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/roles" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": [
+		{
+			"id": 1,
+			"role_name": "学生",
+			"permissions": ["read", "write_self"]
+		},
+		{
+			"id": 2,
+			"role_name": "教师",
+			"permissions": ["read", "write", "manage_students"]
+		},
+		{
+			"id": 3,
+			"role_name": "管理员",
+			"permissions": ["all"]
+		}
+	],
+	"message": "获取角色列表成功",
+	"success": true
+}
+```
+
+### 2. 创建角色
+
+```bash
+curl -X POST "http://localhost:5000/api/v1/roles" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "role_name": "实验室助理",
+    "permissions": ["read", "write", "manage_devices"]
+  }'
+```
+
+**响应示例:**
+```json
+{
+	"code": 201,
+	"data": {
+		"id": 4,
+		"role_name": "实验室助理",
+		"permissions": ["read", "write", "manage_devices"]
+	},
+	"message": "角色创建成功",
+	"success": true
+}
+```
+
+### 3. 获取角色详情
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/roles/1" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"id": 1,
+		"role_name": "学生",
+		"permissions": ["read", "write_self"]
+	},
+	"message": "获取角色详情成功",
+	"success": true
+}
+```
+
+### 4. 更新角色
+
+```bash
+curl -X PUT "http://localhost:5000/api/v1/roles/4" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "role_name": "高级实验室助理",
+    "permissions": ["read", "write", "manage_devices", "manage_attendance"]
+  }'
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"id": 4,
+		"role_name": "高级实验室助理",
+		"permissions": ["read", "write", "manage_devices", "manage_attendance"]
+	},
+	"message": "角色信息更新成功",
+	"success": true
+}
+```
+
+### 5. 删除角色
+
+```bash
+curl -X DELETE "http://localhost:5000/api/v1/roles/4" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"message": "角色删除成功",
+	"success": true
+}
+```
+
+**注意事项:**
+- 删除角色前需要确保没有用户使用该角色
+- 如果有用户使用该角色，删除操作会失败并返回错误信息
+
+### 6. 获取用户角色
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/users/1/roles" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": [
+		{
+			"id": 1,
+			"role_name": "学生",
+			"permissions": ["read", "write_self"]
+		},
+		{
+			"id": 3,
+			"role_name": "管理员",
+			"permissions": ["all"]
+		}
+	],
+	"message": "获取用户角色成功",
+	"success": true
+}
+```
+
+### 7. 更新用户角色
+
+```bash
+curl -X PUT "http://localhost:5000/api/v1/users/1/roles" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "role_ids": [1, 2]
+  }'
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": [
+		{
+			"id": 1,
+			"role_name": "学生",
+			"permissions": ["read", "write_self"]
+		},
+		{
+			"id": 2,
+			"role_name": "教师",
+			"permissions": ["read", "write", "manage_students"]
+		}
+	],
+	"message": "用户角色更新成功",
+	"success": true
+}
+```
+
+**字段说明:**
+- `role_name`: 角色名称（必填，唯一）
+- `permissions`: 权限列表（可选，JSON数组格式）
+- `role_ids`: 角色ID列表（用于用户角色分配）
+
+**常用权限说明:**
+- `read`: 读取权限
+- `write`: 写入权限
+- `write_self`: 仅能修改自己的信息
+- `write_all`: 可以修改所有信息
+- `manage_all`: 管理所有功能
+- `manage_students`: 管理学生
+- `manage_devices`: 管理设备
+- `manage_attendance`: 管理考勤
+- `all`: 所有权限
+
 ---
 
 ## 通知公告

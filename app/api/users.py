@@ -325,6 +325,20 @@ def get_roles():
     except Exception as e:
         return api_error(f"获取角色列表失败: {str(e)}", 500)
 
+@api_bp.route('/roles/<int:role_id>', methods=['GET'])
+@jwt_required()
+def get_role(role_id):
+    """获取单个角色详情"""
+    try:
+        role = Role.query.get(role_id)
+        if not role:
+            return api_error("角色不存在", 404)
+        
+        return api_success(data=role.to_dict(), message="获取角色详情成功")
+        
+    except Exception as e:
+        return api_error(f"获取角色详情失败: {str(e)}", 500)
+
 @api_bp.route('/roles', methods=['POST'])
 @jwt_required()
 def create_role():
