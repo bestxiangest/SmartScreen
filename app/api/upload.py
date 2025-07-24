@@ -23,7 +23,10 @@ def generate_unique_filename(filename):
     ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
     # 生成UUID作为文件名
     unique_name = str(uuid.uuid4())
-    return f"{unique_name}.{ext}" if ext else unique_name
+    # 确保图片文件始终有扩展名，如果没有扩展名则默认为jpg
+    if not ext:
+        ext = 'jpg'  # 默认扩展名
+    return f"{unique_name}.{ext}"
 
 @api_bp.route('/upload/image', methods=['POST'])
 @jwt_required()
@@ -57,7 +60,12 @@ def upload_image():
         
         # 生成安全的文件名
         original_filename = secure_filename(file.filename)
-        unique_filename = generate_unique_filename(original_filename)
+        # 如果secure_filename处理后丢失了扩展名，使用原始文件名获取扩展名
+        if '.' not in original_filename and '.' in file.filename:
+            ext = file.filename.rsplit('.', 1)[1].lower()
+            unique_filename = generate_unique_filename(f"temp.{ext}")
+        else:
+            unique_filename = generate_unique_filename(original_filename)
         
         # 确保上传目录存在
         upload_folder = current_app.config['UPLOAD_FOLDER']
@@ -130,7 +138,12 @@ def upload_multiple_images():
             
             # 生成安全的文件名
             original_filename = secure_filename(file.filename)
-            unique_filename = generate_unique_filename(original_filename)
+            # 如果secure_filename处理后丢失了扩展名，使用原始文件名获取扩展名
+            if '.' not in original_filename and '.' in file.filename:
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                unique_filename = generate_unique_filename(f"temp.{ext}")
+            else:
+                unique_filename = generate_unique_filename(original_filename)
             
             # 保存文件
             file_path = os.path.join(upload_folder, unique_filename)
