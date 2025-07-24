@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import func
 
 @api_bp.route('/environmental/data', methods=['GET'])
+@jwt_required()
 def get_environmental_logs():
     """获取环境监测日志列表"""
     try:
@@ -128,6 +129,7 @@ def create_environmental_log():
         return api_error(f"创建环境监测日志失败: {str(e)}", 500)
 
 @api_bp.route('/environmental/data/<int:log_id>', methods=['GET'])
+@jwt_required()
 def get_environmental_log(log_id):
     """获取单个环境监测日志详情"""
     try:
@@ -161,6 +163,7 @@ def delete_environmental_log(log_id):
         return api_error(f"删除环境监测日志失败: {str(e)}", 500)
 
 @api_bp.route('/environmental/data/latest', methods=['GET'])
+@jwt_required()
 def get_latest_environmental_data():
     """获取最新环境监测数据"""
     try:
@@ -190,6 +193,7 @@ def get_latest_environmental_data():
         return api_error(f"获取最新环境监测数据失败: {str(e)}", 500)
 
 @api_bp.route('/environmental/data/statistics', methods=['GET'])
+@jwt_required()
 def get_environmental_statistics():
     """获取环境监测统计数据"""
     try:

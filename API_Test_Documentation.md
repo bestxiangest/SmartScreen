@@ -22,7 +22,8 @@
 10. [安全须知](#安全须知)
 11. [项目成果](#项目成果)
 12. [用户个人资料](#用户个人资料)
-13. 文件上传
+13. [环境监测](#环境监测)
+14. [文件上传](#文件上传)
 
 ---
 
@@ -1755,9 +1756,283 @@ curl -X PUT "http://localhost:5000/api/v1/user-profiles/me" \
 - `dormitory`: 宿舍信息（可选，例如：2栋305室）
 - `tech_stack`: 技术栈（可选，JSON数组格式）
 
+---
 
+## 环境监测
+
+### 1. 获取环境监测日志列表
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/environmental/data?page=1&limit=10&sensor_type=温度&lab_id=1" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"items": [
+			{
+				"id": 1,
+				"sensor_type": "温度",
+				"value": 23.5,
+				"unit": "°C",
+				"lab_id": 1,
+				"timestamp": "2025-01-20T10:30:00"
+			},
+			{
+				"id": 2,
+				"sensor_type": "湿度",
+				"value": 62.8,
+				"unit": "%",
+				"lab_id": 1,
+				"timestamp": "2025-01-20T11:00:00"
+			}
+		],
+		"pagination": {
+			"has_next": true,
+			"has_prev": false,
+			"limit": 10,
+			"page": 1,
+			"total": 25,
+			"total_pages": 3
+		}
+	},
+	"message": "获取环境监测日志列表成功",
+	"success": true
+}
+```
+
+### 2. 创建环境监测日志
+
+```bash
+curl -X POST "http://localhost:5000/api/v1/environmental/data" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "sensor_type": "温度",
+    "value": 25.3,
+    "unit": "°C",
+    "lab_id": 1
+  }'
+```
+
+**响应示例:**
+```json
+{
+	"code": 201,
+	"data": {
+		"id": 24,
+		"lab_id": 1,
+		"sensor_type": "温度",
+		"timestamp": "2025-07-24T20:39:46",
+		"unit": "°C",
+		"value": 25.3
+	},
+	"message": "创建环境监测日志成功",
+	"success": true
+}
+```
+
+### 3. 获取单个环境监测日志详情
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/environmental/data/1" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"id": 1,
+		"sensor_type": "温度",
+		"value": 23.5,
+		"unit": "°C",
+		"lab_id": 1,
+		"timestamp": "2025-01-20T10:30:00"
+	},
+	"message": "获取环境监测日志详情成功",
+	"success": true
+}
+```
+
+### 4. 删除环境监测日志
+
+```bash
+curl -X DELETE "http://localhost:5000/api/v1/environmental/data/1" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"message": "删除环境监测日志成功",
+	"success": true
+}
+```
+
+### 5. 获取最新环境监测数据
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/environmental/data/latest" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"CO2": {
+			"id": 20,
+			"lab_id": 1,
+			"sensor_type": "CO2",
+			"timestamp": "2025-07-24T12:00:00",
+			"unit": "ppm",
+			"value": 720
+		},
+		"光照": {
+			"id": 19,
+			"lab_id": 1,
+			"sensor_type": "光照",
+			"timestamp": "2025-07-24T12:00:00",
+			"unit": "lux",
+			"value": 790
+		},
+		"温度": {
+			"id": 24,
+			"lab_id": 1,
+			"sensor_type": "温度",
+			"timestamp": "2025-07-24T20:39:46",
+			"unit": "°C",
+			"value": 25.3
+		},
+		"湿度": {
+			"id": 18,
+			"lab_id": 1,
+			"sensor_type": "湿度",
+			"timestamp": "2025-07-24T12:00:00",
+			"unit": "%",
+			"value": 58
+		}
+	},
+	"message": "获取最新环境监测数据成功",
+	"success": true
+}
+```
+
+### 6. 获取环境监测统计数据
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/environmental/data/statistics?sensor_type=温度&hours=168" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"sensor_type": "温度",
+		"period": "最近168小时",
+		"total_records": 168,
+		"statistics": {
+			"avg": 24.2,
+			"min": 20.5,
+			"max": 27.8
+		}
+	},
+	"message": "获取环境监测统计数据成功",
+	"success": true
+}
+```
+
+### 7. 批量创建环境监测日志
+
+```bash
+curl -X POST "http://localhost:5000/api/v1/environmental/data/batch" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '[
+    {
+      "sensor_type": "温度",
+      "value": 23.8,
+      "unit": "°C",
+      "lab_id": 1
+    },
+    {
+      "sensor_type": "湿度",
+      "value": 66.2,
+      "unit": "%",
+      "lab_id": 1
+    },
+    {
+      "sensor_type": "光照",
+      "value": 322.5,
+      "unit": "lux",
+      "lab_id": 1
+    }
+  ]'
+```
+
+**响应示例:**
+```json
+{
+	"code": 201,
+	"data": [
+		{
+			"id": 27,
+			"sensor_type": "温度",
+			"value": 23.8,
+			"unit": "°C",
+			"lab_id": 1,
+			"timestamp": "2025-01-22T15:00:00"
+		},
+		{
+			"id": 28,
+			"sensor_type": "湿度",
+			"value": 66.2,
+			"unit": "%",
+			"lab_id": 1,
+			"timestamp": "2025-01-22T15:00:00"
+		},
+		{
+			"id": 29,
+			"sensor_type": "光照",
+			"value": 322.5,
+			"unit": "lux",
+			"lab_id": 1,
+			"timestamp": "2025-01-22T15:00:00"
+		}
+	],
+	"message": "批量创建3条环境监测日志成功",
+	"success": true
+}
+```
+
+**字段说明:**
+- `sensor_type`: 传感器类型（必填，可选值：温度、湿度、光照、CO2）
+- `value`: 监测数值（必填，浮点数）
+- `unit`: 单位（必填，字符串）
+- `lab_id`: 实验室ID（必填，整数）
+- `timestamp`: 时间戳（可选，ISO格式，默认为当前北京时间）
+
+**查询参数说明:**
+- `page`: 页码（默认为1）
+- `limit`: 每页数量（默认为10，最大100）
+- `sensor_type`: 传感器类型筛选（可选）
+- `lab_id`: 实验室ID筛选（可选）
+- `start_time`: 开始时间（可选，ISO格式）
+- `end_time`: 结束时间（可选，ISO格式）
+- `hours`: 统计小时数（默认为24小时）
 
 ---
+
+## 文件上传
 
 ## 1. 单个图片上传
 
