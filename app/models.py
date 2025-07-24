@@ -76,6 +76,31 @@ class UserRole(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), primary_key=True)
 
+class UserProfile(db.Model):
+    """用户个人资料模型"""
+    __tablename__ = 'user_profiles'
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True, comment='用户ID，关联users表的主键，同时也是本表主键')
+    gender = db.Column(db.Enum('男', '女', '保密'), default='保密', comment='性别')
+    birth_date = db.Column(db.Date, comment='出生日期')
+    position = db.Column(db.String(100), comment='职务（例如：项目组长、成员、2023级负责人）')
+    dormitory = db.Column(db.String(100), comment='宿舍信息（例如：2栋305室）')
+    tech_stack = db.Column(db.JSON, comment='技术栈，使用JSON数组存储')
+    
+    # 关系
+    user = db.relationship('User', backref=db.backref('profile', uselist=False, cascade='all, delete-orphan'))
+    
+    def to_dict(self):
+        """转换为字典"""
+        return {
+            'user_id': self.user_id,
+            'gender': self.gender,
+            'birth_date': self.birth_date.isoformat() if self.birth_date else None,
+            'position': self.position,
+            'dormitory': self.dormitory,
+            'tech_stack': self.tech_stack
+        }
+
 class Announcement(db.Model):
     """通知公告模型"""
     __tablename__ = 'announcements'

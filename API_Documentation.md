@@ -2585,6 +2585,303 @@ curl -X POST http://localhost:5000/api/v1/upload/image \
 
 ---
 
-**文档版本**: v1.0  
+## 用户个人资料
+
+### 1. 获取用户个人资料列表
+
+**接口地址**: `GET /api/v1/user-profiles`
+
+**描述**: 获取用户个人资料列表（分页）
+
+**认证**: 需要JWT令牌
+
+**查询参数**:
+- `page` (int, 可选): 页码，默认1
+- `limit` (int, 可选): 每页数量，默认10，最大100
+- `search` (string, 可选): 搜索用户名或姓名
+- `position` (string, 可选): 按职务筛选
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "success": true,
+  "message": "获取用户个人资料列表成功",
+  "data": {
+    "items": [
+      {
+        "user_id": 1,
+        "gender": "男",
+        "birth_date": "2000-01-15",
+        "position": "实验室负责人",
+        "dormitory": "1栋101室",
+        "tech_stack": ["Python", "Flask", "MySQL", "Vue.js"],
+        "user": {
+          "id": 1,
+          "username": "admin",
+          "full_name": "管理员",
+          "avatar_url": "http://example.com/avatar1.jpg"
+        }
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "total_pages": 1,
+      "has_next": false,
+      "has_prev": false
+    }
+  }
+}
+```
+
+### 2. 获取指定用户个人资料
+
+**接口地址**: `GET /api/v1/user-profiles/{user_id}`
+
+**描述**: 获取指定用户的个人资料详情
+
+**认证**: 需要JWT令牌
+
+**路径参数**:
+- `user_id` (int, 必填): 用户ID
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "success": true,
+  "message": "获取用户个人资料成功",
+  "data": {
+    "user_id": 1,
+    "gender": "男",
+    "birth_date": "2000-01-15",
+    "position": "实验室负责人",
+    "dormitory": "1栋101室",
+    "tech_stack": ["Python", "Flask", "MySQL", "Vue.js"],
+    "user": {
+      "id": 1,
+      "username": "admin",
+      "full_name": "管理员",
+      "major": "计算机科学与技术",
+      "class": "2022级1班",
+      "email": "admin@example.com",
+      "phone_number": "13800138000",
+      "avatar_url": "http://example.com/avatar1.jpg",
+      "created_at": "2024-01-01T12:00:00Z"
+    }
+  }
+}
+```
+
+### 3. 创建用户个人资料
+
+**接口地址**: `POST /api/v1/user-profiles`
+
+**描述**: 创建用户个人资料
+
+**认证**: 需要JWT令牌
+
+**请求参数**:
+```json
+{
+  "user_id": 1,
+  "gender": "男",
+  "birth_date": "2000-01-15",
+  "position": "实验室负责人",
+  "dormitory": "1栋101室",
+  "tech_stack": ["Python", "Flask", "MySQL", "Vue.js"]
+}
+```
+
+**参数说明**:
+- `user_id` (int, 必填): 用户ID
+- `gender` (string, 可选): 性别，可选值：男、女、保密，默认保密
+- `birth_date` (string, 可选): 出生日期，格式：YYYY-MM-DD
+- `position` (string, 可选): 职务
+- `dormitory` (string, 可选): 宿舍信息
+- `tech_stack` (array, 可选): 技术栈数组
+
+**响应示例**:
+```json
+{
+  "code": 201,
+  "success": true,
+  "message": "用户个人资料创建成功",
+  "data": {
+    "user_id": 1,
+    "gender": "男",
+    "birth_date": "2000-01-15",
+    "position": "实验室负责人",
+    "dormitory": "1栋101室",
+    "tech_stack": ["Python", "Flask", "MySQL", "Vue.js"],
+    "user": {
+      "id": 1,
+      "username": "admin",
+      "full_name": "管理员",
+      "avatar_url": "http://example.com/avatar1.jpg"
+    }
+  }
+}
+```
+
+### 4. 更新用户个人资料
+
+**接口地址**: `PUT /api/v1/user-profiles/{user_id}`
+
+**描述**: 更新指定用户的个人资料
+
+**认证**: 需要JWT令牌
+
+**路径参数**:
+- `user_id` (int, 必填): 用户ID
+
+**请求参数**:
+```json
+{
+  "gender": "女",
+  "birth_date": "2001-03-20",
+  "position": "项目组长",
+  "dormitory": "2栋205室",
+  "tech_stack": ["Java", "Spring Boot", "React", "PostgreSQL"]
+}
+```
+
+**参数说明**: 所有字段均为可选，只更新提供的字段
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "success": true,
+  "message": "用户个人资料更新成功",
+  "data": {
+    "user_id": 1,
+    "gender": "女",
+    "birth_date": "2001-03-20",
+    "position": "项目组长",
+    "dormitory": "2栋205室",
+    "tech_stack": ["Java", "Spring Boot", "React", "PostgreSQL"],
+    "user": {
+      "id": 1,
+      "username": "admin",
+      "full_name": "管理员",
+      "avatar_url": "http://example.com/avatar1.jpg"
+    }
+  }
+}
+```
+
+### 5. 删除用户个人资料
+
+**接口地址**: `DELETE /api/v1/user-profiles/{user_id}`
+
+**描述**: 删除指定用户的个人资料
+
+**认证**: 需要JWT令牌
+
+**路径参数**:
+- `user_id` (int, 必填): 用户ID
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "success": true,
+  "message": "用户个人资料删除成功"
+}
+```
+
+### 6. 获取当前用户个人资料
+
+**接口地址**: `GET /api/v1/my-profile`
+
+**描述**: 获取当前登录用户的个人资料
+
+**认证**: 需要JWT令牌
+
+**请求参数**: 无
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "success": true,
+  "message": "获取个人资料成功",
+  "data": {
+    "user_id": 1,
+    "gender": "男",
+    "birth_date": "2000-01-15",
+    "position": "实验室负责人",
+    "dormitory": "1栋101室",
+    "tech_stack": ["Python", "Flask", "MySQL", "Vue.js"],
+    "user": {
+      "id": 1,
+      "username": "admin",
+      "full_name": "管理员",
+      "major": "计算机科学与技术",
+      "class": "2022级1班",
+      "email": "admin@example.com",
+      "phone_number": "13800138000",
+      "avatar_url": "http://example.com/avatar1.jpg",
+      "created_at": "2024-01-01T12:00:00Z"
+    }
+  }
+}
+```
+
+### 7. 更新当前用户个人资料
+
+**接口地址**: `PUT /api/v1/my-profile`
+
+**描述**: 更新当前登录用户的个人资料（如果不存在则自动创建）
+
+**认证**: 需要JWT令牌
+
+**请求参数**:
+```json
+{
+  "gender": "男",
+  "birth_date": "2000-01-15",
+  "position": "实验室负责人",
+  "dormitory": "1栋101室",
+  "tech_stack": ["Python", "Flask", "MySQL", "Vue.js"]
+}
+```
+
+**参数说明**: 所有字段均为可选
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "success": true,
+  "message": "个人资料更新成功",
+  "data": {
+    "user_id": 1,
+    "gender": "男",
+    "birth_date": "2000-01-15",
+    "position": "实验室负责人",
+    "dormitory": "1栋101室",
+    "tech_stack": ["Python", "Flask", "MySQL", "Vue.js"],
+    "user": {
+      "id": 1,
+      "username": "admin",
+      "full_name": "管理员",
+      "major": "计算机科学与技术",
+      "class": "2022级1班",
+      "email": "admin@example.com",
+      "phone_number": "13800138000",
+      "avatar_url": "http://example.com/avatar1.jpg",
+      "created_at": "2024-01-01T12:00:00Z"
+    }
+  }
+}
+```
+
+---
+
+**文档版本**: v1.1  
 **最后更新**: 2024-01-15  
 **维护者**: 智慧实验室开发团队

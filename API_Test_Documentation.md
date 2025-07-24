@@ -1325,6 +1325,229 @@ curl -X DELETE "http://localhost:5000/api/v1/projects/3" \
 
 ---
 
+## 用户个人资料
+
+### 1. 获取用户个人资料列表
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/user-profiles?page=1&limit=10&gender=男&position=项目组长" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"items": [
+			{
+				"user_id": 1,
+				"username": "admin",
+				"full_name": "管理员",
+				"gender": "男",
+				"birth_date": "1995-06-15",
+				"position": "项目组长",
+				"dormitory": "2栋305室",
+				"tech_stack": ["Python", "Vue.js", "MySQL"]
+			}
+		],
+		"pagination": {
+			"has_next": false,
+			"has_prev": false,
+			"limit": 10,
+			"page": 1,
+			"total": 1,
+			"total_pages": 1
+		}
+	},
+	"message": "获取用户个人资料列表成功",
+	"success": true
+}
+```
+
+### 2. 获取指定用户个人资料
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/user-profiles/1" \
+  -H "Content-Type: application/json"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"user_id": 1,
+		"username": "admin",
+		"full_name": "管理员",
+		"gender": "男",
+		"birth_date": "1995-06-15",
+		"position": "项目组长",
+		"dormitory": "2栋305室",
+		"tech_stack": ["Python", "Vue.js", "MySQL"]
+	},
+	"message": "获取用户个人资料成功",
+	"success": true
+}
+```
+
+### 3. 创建用户个人资料
+
+```bash
+curl -X POST "http://localhost:5000/api/v1/user-profiles" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "user_id": 2,
+    "gender": "女",
+    "birth_date": "1998-03-20",
+    "position": "技术开发",
+    "dormitory": "3栋201室",
+    "tech_stack": ["Java", "React", "PostgreSQL"]
+  }'
+```
+
+**响应示例:**
+```json
+{
+	"code": 201,
+	"data": {
+		"user_id": 2,
+		"username": "user2",
+		"full_name": "用户2",
+		"gender": "女",
+		"birth_date": "1998-03-20",
+		"position": "技术开发",
+		"dormitory": "3栋201室",
+		"tech_stack": ["Java", "React", "PostgreSQL"]
+	},
+	"message": "创建用户个人资料成功",
+	"success": true
+}
+```
+
+### 4. 更新用户个人资料
+
+```bash
+curl -X PUT "http://localhost:5000/api/v1/user-profiles/2" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "gender": "女",
+    "birth_date": "1998-03-20",
+    "position": "高级开发工程师",
+    "dormitory": "3栋301室",
+    "tech_stack": ["Java", "React", "PostgreSQL", "Docker"]
+  }'
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"user_id": 2,
+		"username": "user2",
+		"full_name": "用户2",
+		"gender": "女",
+		"birth_date": "1998-03-20",
+		"position": "高级开发工程师",
+		"dormitory": "3栋301室",
+		"tech_stack": ["Java", "React", "PostgreSQL", "Docker"]
+	},
+	"message": "更新用户个人资料成功",
+	"success": true
+}
+```
+
+### 5. 删除用户个人资料
+
+```bash
+curl -X DELETE "http://localhost:5000/api/v1/user-profiles/2" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"message": "删除用户个人资料成功",
+	"success": true
+}
+```
+
+### 6. 获取当前登录用户个人资料
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/user-profiles/me" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"user_id": 1,
+		"username": "admin",
+		"full_name": "管理员",
+		"gender": "男",
+		"birth_date": "1995-06-15",
+		"position": "项目组长",
+		"dormitory": "2栋305室",
+		"tech_stack": ["Python", "Vue.js", "MySQL"]
+	},
+	"message": "获取当前用户个人资料成功",
+	"success": true
+}
+```
+
+### 7. 更新当前登录用户个人资料
+
+```bash
+curl -X PUT "http://localhost:5000/api/v1/user-profiles/me" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "gender": "男",
+    "birth_date": "1995-06-15",
+    "position": "高级项目经理",
+    "dormitory": "2栋405室",
+    "tech_stack": ["Python", "Vue.js", "MySQL", "Redis", "Docker"]
+  }'
+```
+
+**响应示例:**
+```json
+{
+	"code": 200,
+	"data": {
+		"user_id": 1,
+		"username": "admin",
+		"full_name": "管理员",
+		"gender": "男",
+		"birth_date": "1995-06-15",
+		"position": "高级项目经理",
+		"dormitory": "2栋405室",
+		"tech_stack": ["Python", "Vue.js", "MySQL", "Redis", "Docker"]
+	},
+	"message": "更新当前用户个人资料成功",
+	"success": true
+}
+```
+
+**字段说明:**
+- `user_id`: 用户ID（创建时必填，更新时不可修改）
+- `gender`: 性别（可选，可选值：'男', '女', '保密'）
+- `birth_date`: 出生日期（可选，格式：YYYY-MM-DD）
+- `position`: 职务（可选，例如：项目组长、成员、2023级负责人）
+- `dormitory`: 宿舍信息（可选，例如：2栋305室）
+- `tech_stack`: 技术栈（可选，JSON数组格式）
+
+---
+
 ## 注意事项
 
 1. **JWT Token获取**: 首先调用登录接口获取JWT Token，然后在需要认证的接口中使用
@@ -1335,6 +1558,7 @@ curl -X DELETE "http://localhost:5000/api/v1/projects/3" \
 6. **状态值**: 请参考各接口的有效状态值列表
 7. **必填字段**: 创建接口中标注的必填字段不能为空
 8. **可选字段**: 即使是可选字段，在测试时也建议包含以确保完整性
+9. **用户个人资料**: 用户个人资料与用户表通过user_id关联，删除用户时会级联删除个人资料
 
 
 ---

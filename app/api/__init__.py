@@ -22,3 +22,4 @@ from . import ai_training
 from . import environmental
 from . import upload
 from . import users
+from . import user_profiles
