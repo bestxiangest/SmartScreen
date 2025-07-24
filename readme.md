@@ -95,7 +95,7 @@
 
 1. **克隆项目**
 ```bash
-git clone <repository-url>
+git clone https://github.com/bestxiangest/SmartScreen.git
 cd SmartScreen
 ```
 
@@ -314,8 +314,8 @@ curl -X POST "http://localhost:5000/api/v1/auth/login" \
 
 如有问题或建议，请通过以下方式联系：
 
-- 项目Issues: [GitHub Issues](https://github.com/your-repo/issues)
-- 邮箱: your-email@example.com
+- 项目Issues: [GitHub Issues](https://github.com/bestxiangest/SmartScreen/issues)
+- 邮箱: zzningg@qq.com
 
 ## 🙏 致谢
 
