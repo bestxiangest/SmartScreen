@@ -7,7 +7,7 @@
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api import api_bp
-from app.models import Device, DeviceCategory, DeviceUsageLog, User
+from app.models import Device, DeviceCategory, DeviceUsageLog, User, beijing_now
 from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime
@@ -379,7 +379,7 @@ def checkin_device(log_id):
         data = request.get_json() or {}
         
         # 更新归还时间和备注
-        usage_log.checkin_time = datetime.utcnow()
+        usage_log.checkin_time = beijing_now()
         if 'notes' in data:
             usage_log.notes = data['notes']
         

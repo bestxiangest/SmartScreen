@@ -11,6 +11,7 @@ from app.models import Schedule
 from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime, time
+from app.models import beijing_now
 
 @api_bp.route('/schedules', methods=['GET'])
 def get_schedules():
@@ -221,7 +222,7 @@ def delete_schedule(schedule_id):
 def get_today_schedules():
     """获取今日课程安排"""
     try:
-        today = datetime.now().date()
+        today = beijing_now().date()
         
         schedules = Schedule.query.filter(
             Schedule.class_date == today

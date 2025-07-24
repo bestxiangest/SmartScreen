@@ -7,7 +7,7 @@
 from flask import request
 from flask_jwt_extended import jwt_required
 from app.api import api_bp
-from app.models import EnvironmentalLog, Lab
+from app.models import EnvironmentalLog, Lab, beijing_now
 from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime, timedelta
@@ -102,7 +102,7 @@ def create_environmental_log():
             return api_error("监测数值必须为数字", 400)
         
         # 解析时间戳（如果提供）
-        timestamp = datetime.utcnow()
+        timestamp = beijing_now()
         if data.get('timestamp'):
             try:
                 timestamp = datetime.fromisoformat(data['timestamp'].replace('Z', '+00:00'))
@@ -207,7 +207,7 @@ def get_environmental_statistics():
             return api_error(f"无效的传感器类型，有效类型: {', '.join(valid_types)}", 400)
         
         # 计算时间范围
-        end_time = datetime.utcnow()
+        end_time = beijing_now()
         start_time = end_time - timedelta(hours=hours)
         
         # 构建查询
@@ -291,7 +291,7 @@ def create_batch_environmental_logs():
                 return api_error("监测数值必须为数字", 400)
             
             # 解析时间戳（如果提供）
-            timestamp = datetime.utcnow()
+            timestamp = beijing_now()
             if log_data.get('timestamp'):
                 try:
                     timestamp = datetime.fromisoformat(log_data['timestamp'].replace('Z', '+00:00'))

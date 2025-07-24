@@ -5,9 +5,16 @@
 """
 
 from app.extensions import db
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
+
+# 北京时区
+BEIJING_TZ = timezone(timedelta(hours=8))
+
+def beijing_now():
+    """获取北京时间"""
+    return datetime.now(BEIJING_TZ)
 
 class User(db.Model):
     """用户模型"""
@@ -23,7 +30,7 @@ class User(db.Model):
     phone_number = db.Column(db.String(20), comment='手机号码')
     face_data = db.Column(db.LargeBinary, comment='用于人脸识别的生物特征数据')
     avatar_url = db.Column(db.String(255), comment='头像图片URL')
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, comment='创建时间')
+    created_at = db.Column(db.DateTime, default=beijing_now, comment='创建时间')
     
     # 关系
     project_memberships = db.relationship('ProjectMember', backref='user', lazy='dynamic')
@@ -112,7 +119,7 @@ class Announcement(db.Model):
     type = db.Column(db.Enum('通知', '新闻', '动态', '安全提示', '天气提示', '名言金句'), 
                     nullable=False, comment='公告类型')
     is_important = db.Column(db.Boolean, default=False, comment='是否为重要通知')
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, comment='发布时间')
+    created_at = db.Column(db.DateTime, default=beijing_now, comment='发布时间')
     
     def to_dict(self):
         return {
@@ -226,7 +233,7 @@ class DeviceUsageLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     device_id = db.Column(db.Integer, db.ForeignKey('devices.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    checkout_time = db.Column(db.DateTime, default=datetime.utcnow, comment='借出时间')
+    checkout_time = db.Column(db.DateTime, default=beijing_now, comment='借出时间')
     checkin_time = db.Column(db.DateTime, comment='归还时间')
     notes = db.Column(db.Text, comment='备注')
     
@@ -248,7 +255,7 @@ class AttendanceLog(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    check_in_time = db.Column(db.DateTime, default=datetime.utcnow, comment='签到时间')
+    check_in_time = db.Column(db.DateTime, default=beijing_now, comment='签到时间')
     check_out_time = db.Column(db.DateTime, comment='签出时间')
     method = db.Column(db.Enum('人脸识别', '扫码', '手动'), nullable=False, comment='考勤方式')
     emotion_status = db.Column(db.String(50), comment='AI情绪检测结果')
@@ -317,7 +324,7 @@ class EnvironmentalLog(db.Model):
     sensor_type = db.Column(db.Enum('温度', '湿度', '光照', 'CO2'), nullable=False, comment='传感器类型')
     value = db.Column(db.Numeric(10, 2), nullable=False, comment='监测数值')
     unit = db.Column(db.String(20), nullable=False, comment='单位')
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, comment='记录时间')
+    timestamp = db.Column(db.DateTime, default=beijing_now, comment='记录时间')
     lab_id = db.Column(db.Integer, db.ForeignKey('labs.id'), nullable=False)
     
     def to_dict(self):

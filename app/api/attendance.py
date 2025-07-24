@@ -7,7 +7,7 @@
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api import api_bp
-from app.models import AttendanceLog, User
+from app.models import AttendanceLog, User, beijing_now
 from app.extensions import db
 from app.helpers.responses import api_success, api_error, api_paginated_success
 from datetime import datetime, date
@@ -83,7 +83,7 @@ def check_in():
             return api_error(f"无效的考勤方式，有效方式: {', '.join(valid_methods)}", 400)
         
         # 检查今日是否已签到
-        today = date.today()
+        today = beijing_now().date()
         existing_log = AttendanceLog.query.filter(
             AttendanceLog.user_id == current_user_id,
             db.func.date(AttendanceLog.check_in_time) == today
@@ -135,7 +135,7 @@ def admin_check_in():
             return api_error(f"无效的考勤方式，有效方式: {', '.join(valid_methods)}", 400)
         
         # 检查今日是否已签到
-        today = date.today()
+        today = beijing_now().date()
         existing_log = AttendanceLog.query.filter(
             AttendanceLog.user_id == user_id,
             db.func.date(AttendanceLog.check_in_time) == today
@@ -181,7 +181,7 @@ def admin_check_out():
             return api_error("用户不存在", 404)
         
         # 查找今日签到记录
-        today = date.today()
+        today = beijing_now().date()
         attendance_log = AttendanceLog.query.filter(
             AttendanceLog.user_id == user_id,
             db.func.date(AttendanceLog.check_in_time) == today
@@ -195,7 +195,7 @@ def admin_check_out():
             return api_error(f"用户 {user.full_name} 已签退", 400)
         
         # 更新签退时间
-        attendance_log.check_out_time = datetime.utcnow()
+        attendance_log.check_out_time = beijing_now()
         
         db.session.commit()
         
@@ -226,8 +226,8 @@ def check_out(log_id):
         if attendance_log.check_out_time:
             return api_error("已签出", 400)
         
-        # 更新签出时间
-        attendance_log.check_out_time = datetime.utcnow()
+        # 更新签退时间
+        attendance_log.check_out_time = beijing_now()
         
         db.session.commit()
         
@@ -243,7 +243,7 @@ def get_today_attendance():
     """获取今日考勤状态"""
     try:
         current_user_id = int(get_jwt_identity())
-        today = date.today()
+        today = beijing_now().date()
         
         # 查找今日考勤记录
         attendance_log = AttendanceLog.query.filter(
@@ -357,7 +357,7 @@ def generate_qr_code():
     """生成每日二维码"""
     try:
         # 获取当前日期
-        today = date.today().isoformat()
+        today = beijing_now().date().isoformat()
         
         # 生成每日唯一的token
         secret_key = "smartscreen_attendance_2024"  # 应该从配置文件读取
@@ -412,7 +412,7 @@ def generate_qr_code_with_url():
             return api_error("缺少必要参数", 400)
         
         # 验证token是否有效
-        today = date.today().isoformat()
+        today = beijing_now().date().isoformat()
         if date_str != today:
             return api_error("日期无效", 400)
             
