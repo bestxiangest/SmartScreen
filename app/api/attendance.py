@@ -26,6 +26,7 @@ def get_attendance_logs():
         page = request.args.get('page', 1, type=int)
         limit = request.args.get('limit', 10, type=int)
         user_id = request.args.get('user_id', type=int)
+        full_name = request.args.get('full_name')
         date_str = request.args.get('date')
         method = request.args.get('method')
         
@@ -35,6 +36,17 @@ def get_attendance_logs():
         # 按用户筛选
         if user_id:
             query = query.filter(AttendanceLog.user_id == user_id)
+        
+        # 按用户真名模糊筛选
+        if full_name:
+            # 使用模糊查询匹配用户姓名
+            users = User.query.filter(User.full_name.like(f'%{full_name}%')).all()
+            if users:
+                user_ids = [user.id for user in users]
+                query = query.filter(AttendanceLog.user_id.in_(user_ids))
+            else:
+                # 如果没有匹配的用户，返回空结果
+                return api_paginated_success([], page, limit, 0, "获取考勤记录列表成功")
         
         # 按日期筛选
         if date_str:
@@ -119,14 +131,16 @@ def admin_check_in():
             return api_error("请求数据不能为空", 400)
         
         # 验证必填字段
-        user_id = data.get('user_id')
-        if not user_id:
-            return api_error("用户ID不能为空", 400)
+        full_name = data.get('full_name')
+        if not full_name:
+            return api_error("用户真名不能为空", 400)
         
         # 验证用户是否存在
-        user = User.query.get(user_id)
+        user = User.query.filter_by(full_name=full_name).first()
         if not user:
             return api_error("用户不存在", 404)
+        
+        user_id = user.id
         
         # 验证考勤方式
         method = data.get('method', '手动')
@@ -171,14 +185,16 @@ def admin_check_out():
             return api_error("请求数据不能为空", 400)
         
         # 验证必填字段
-        user_id = data.get('user_id')
-        if not user_id:
-            return api_error("用户ID不能为空", 400)
+        full_name = data.get('full_name')
+        if not full_name:
+            return api_error("用户真名不能为空", 400)
         
         # 验证用户是否存在
-        user = User.query.get(user_id)
+        user = User.query.filter_by(full_name=full_name).first()
         if not user:
             return api_error("用户不存在", 404)
+        
+        user_id = user.id
         
         # 查找今日签到记录
         today = beijing_now().date()
@@ -266,8 +282,16 @@ def get_attendance_statistics():
     try:
         # 获取查询参数
         user_id = request.args.get('user_id', type=int)
+        full_name = request.args.get('full_name')
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
+        
+        # 如果指定了用户真名，则根据真名查找用户ID
+        if full_name:
+            user = User.query.filter_by(full_name=full_name).first()
+            if not user:
+                return api_error("用户不存在", 404)
+            user_id = user.id
         
         # 如果没有指定用户，则统计当前用户
         if not user_id:

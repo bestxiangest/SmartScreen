@@ -1453,6 +1453,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 - `page` (int, 可选): 页码，默认1
 - `limit` (int, 可选): 每页数量，默认10
 - `user_id` (int, 可选): 用户ID筛选
+- `full_name` (string, 可选): 用户真名模糊筛选（支持部分匹配）
 - `date` (string, 可选): 日期筛选，格式YYYY-MM-DD
 - `method` (string, 可选): 考勤方式筛选
 
@@ -1598,6 +1599,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 
 **查询参数**:
 - `user_id` (int, 可选): 用户ID，默认当前用户
+- `full_name` (string, 可选): 用户真名，优先级高于user_id
 - `start_date` (string, 可选): 开始日期，格式YYYY-MM-DD
 - `end_date` (string, 可选): 结束日期，格式YYYY-MM-DD
 
@@ -1629,7 +1631,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 **请求参数**:
 ```json
 {
-  "user_id": 1,
+  "full_name": "张三",
   "method": "手动",
   "emotion_status": "正常"
 }
@@ -1637,7 +1639,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 
 **参数说明**:
 
-- `user_id` (int, 必填): 要签到的用户ID
+- `full_name` (string, 必填): 要签到的用户真名
 - `method` (string, 可选): 考勤方式，默认"手动"
 - `emotion_status` (string, 可选): 情绪状态
 
@@ -1670,12 +1672,12 @@ Authorization: Bearer YOUR_JWT_TOKEN
 **请求参数**:
 ```json
 {
-  "user_id": 1
+  "full_name": "张三"
 }
 ```
 
 **参数说明**:
-- `user_id` (int, 必填): 要签退的用户ID
+- `full_name` (string, 必填): 要签退的用户真名
 
 **响应示例**:
 ```json

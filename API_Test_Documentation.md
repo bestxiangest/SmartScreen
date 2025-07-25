@@ -673,7 +673,7 @@ curl -X DELETE "http://localhost:5000/api/v1/announcements/1" \
 ### 1. 获取考勤记录列表
 
 ```bash
-curl -X GET "http://localhost:5000/api/v1/attendance?page=1&limit=10&user_id=1&date=2024-01-15&method=人脸识别" \
+curl -X GET "http://localhost:5000/api/v1/attendance?page=1&limit=10&full_name=张&date=2024-01-15&method=人脸识别" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 ```
@@ -798,7 +798,7 @@ curl -X GET "http://localhost:5000/api/v1/attendance/today" \
 ### 5. 获取考勤统计
 
 ```bash
-curl -X GET "http://localhost:5000/api/v1/attendance/statistics?user_id=1&start_date=2024-01-01&end_date=2024-01-31" \
+curl -X GET "http://localhost:5000/api/v1/attendance/statistics?user_id=1&full_name=张三&start_date=2024-01-01&end_date=2024-01-31" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 ```
@@ -824,7 +824,7 @@ curl -X POST "http://localhost:5000/api/v1/attendance/admin/check-in" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
-    "user_id": 1,
+    "full_name": "张三",
     "method": "手动",
     "emotion_status": "正常"
   }'
@@ -853,7 +853,7 @@ curl -X POST "http://localhost:5000/api/v1/attendance/admin/check-out" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
-    "user_id": 1
+    "full_name": "张三"
   }'
 ```
 ```
