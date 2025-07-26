@@ -52,7 +52,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/auth/login \
 
 ```bash
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-categories" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -78,7 +78,7 @@ curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-categories" \
 
 ```bash
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/material-categories \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "实验耗材",
@@ -106,7 +106,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/material-categories \
 
 ```bash
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/material-categories/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "电子元件（更新）",
@@ -134,7 +134,7 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/material-categories/1 \
 
 ```bash
 curl -X DELETE http://sys.sharpcaterpillar.top:5000/api/v1/material-categories/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY"
 ```
 
 **响应示例**:
@@ -162,22 +162,22 @@ curl -X DELETE http://sys.sharpcaterpillar.top:5000/api/v1/material-categories/1
 ```bash
 # 获取所有物料
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/materials" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按分类筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/materials?category_id=1" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按库存状态筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/materials?stock_status=low" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 分页查询
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/materials?page=1&limit=10" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -224,7 +224,7 @@ curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/materials?page=1&limit=
 
 ```bash
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/materials \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "树莓派4B",
@@ -245,7 +245,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/materials \
 
 ```bash
 curl -X GET http://sys.sharpcaterpillar.top:5000/api/v1/materials/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -253,7 +253,7 @@ curl -X GET http://sys.sharpcaterpillar.top:5000/api/v1/materials/1 \
 
 ```bash
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/materials/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "current_stock": 30,
@@ -266,7 +266,7 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/materials/1 \
 
 ```bash
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/materials/batch-update-stock \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "updates": [
@@ -313,7 +313,7 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/materials/batch-update-s
 
 ```bash
 curl -X DELETE http://sys.sharpcaterpillar.top:5000/api/v1/materials/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY"
 ```
 
 ### 3. 物料申领管理
@@ -323,17 +323,17 @@ curl -X DELETE http://sys.sharpcaterpillar.top:5000/api/v1/materials/1 \
 ```bash
 # 获取所有申领记录
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-requests" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按状态筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-requests?status=pending" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按申请人筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-requests?requester_id=1" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -341,7 +341,7 @@ curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-requests?reque
 
 ```bash
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/material-requests \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "material_id": 1,
@@ -357,7 +357,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/material-requests \
 ```bash
 # 批准申领
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/material-requests/1/approve \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "approved_quantity": 5,
@@ -366,7 +366,7 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/material-requests/1/appr
 
 # 拒绝申领
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/material-requests/1/reject \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "reason": "库存不足，建议延后申领"
@@ -377,7 +377,7 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/material-requests/1/reje
 
 ```bash
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/material-requests/1/complete \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "actual_quantity": 5,
@@ -392,22 +392,22 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/material-requests/1/comp
 ```bash
 # 获取所有记录
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-transactions" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按物料筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-transactions?material_id=1" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按交易类型筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-transactions?transaction_type=out" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按日期范围筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-transactions?start_date=2024-01-01&end_date=2024-01-31" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -416,7 +416,7 @@ curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/material-transactions?s
 ```bash
 # 入库记录
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/material-transactions \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "material_id": 1,
@@ -429,7 +429,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/material-transactions \
 
 # 出库记录
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/material-transactions \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "material_id": 1,
@@ -447,7 +447,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/material-transactions \
 
 ```bash
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/materials/inventory-statistics" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -494,27 +494,27 @@ curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/materials/inventory-sta
 ```bash
 # 获取所有工单
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按状态筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders?status=pending" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按设备筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders?device_id=1" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按优先级筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders?priority=high" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 分页查询
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders?page=1&limit=10" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -566,7 +566,7 @@ curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders?page
 
 ```bash
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "device_id": 1,
@@ -584,7 +584,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders \
 
 ```bash
 curl -X GET http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -592,7 +592,7 @@ curl -X GET http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1 \
 
 ```bash
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "fault_description": "激光头模块故障，需要更换",
@@ -606,7 +606,7 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1 \
 
 ```bash
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1/assign \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "assignee_id": 2,
@@ -619,7 +619,7 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1/ass
 
 ```bash
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1/complete \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "solution_description": "更换了激光头模块，重新校准了设备",
@@ -641,7 +641,7 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1/com
 
 ```bash
 curl -X DELETE http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY"
 ```
 
 ### 2. 维修统计
@@ -651,17 +651,17 @@ curl -X DELETE http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/1 
 ```bash
 # 获取总体统计
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/statistics" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按日期范围统计
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/statistics?start_date=2024-01-01&end_date=2024-01-31" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按设备统计
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/statistics?device_id=1" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -720,22 +720,22 @@ curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/maintenance-orders/stat
 ```bash
 # 获取当前月份值班安排
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按年月筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules?year=2024&month=1" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按用户筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules?user_id=1" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按状态筛选
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules?status=scheduled" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -771,7 +771,7 @@ curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules?status=s
 
 ```bash
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_id": 1,
@@ -789,7 +789,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules \
 
 ```bash
 curl -X GET http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -797,7 +797,7 @@ curl -X GET http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1 \
 
 ```bash
 curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "start_time": "08:30",
@@ -811,7 +811,7 @@ curl -X PUT http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1 \
 
 ```bash
 curl -X DELETE http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY"
 ```
 
 ### 2. 替班管理
@@ -820,7 +820,7 @@ curl -X DELETE http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1 \
 
 ```bash
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1/substitute \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "substitute_id": 2,
@@ -835,7 +835,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1/substi
 
 ```bash
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1/check-in \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "check_in_time": "2024-01-15T08:00:00Z",
@@ -848,7 +848,7 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1/check-
 
 ```bash
 curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1/check-out \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json" \
   -d '{
     "check_out_time": "2024-01-15T12:00:00Z",
@@ -865,12 +865,12 @@ curl -X POST http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/1/check-
 ```bash
 # 获取当前月份日历
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/calendar" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 获取指定月份日历
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/calendar?year=2024&month=2" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 
@@ -881,17 +881,17 @@ curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/calendar
 ```bash
 # 获取总体统计
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/statistics" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按年月统计
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/statistics?year=2024&month=1" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 
 # 按用户统计
 curl -X GET "http://sys.sharpcaterpillar.top:5000/api/v1/duty-schedules/statistics?user_id=1" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MzUxNDc3OCwianRpIjoiMmQ4MmRkNzQtZTg3ZS00MTQxLTg0YjItYzE2NzA2Y2JmYzIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NTM1MTQ3NzgsImV4cCI6MTc1MzYwMTE3OH0.ZLzLXas9IJgYQn0ZNypDkbh8uF3jIv-M2NYGQjWShxY" \
   -H "Content-Type: application/json"
 ```
 

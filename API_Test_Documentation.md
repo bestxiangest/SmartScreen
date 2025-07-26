@@ -194,6 +194,43 @@ curl -X GET "http://localhost:5000/api/v1/users?page=1&limit=10&role=管理员&s
 }
 ```
 
+### 1.1 通过真名查询用户ID
+
+```bash
+# 通过真名查询用户ID
+curl -X GET "http://localhost:5000/api/v1/users/search-by-name?full_name=张祖宁" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# 查询管理员用户
+curl -X GET "http://localhost:5000/api/v1/users/search-by-name?full_name=管理员" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "success": true,
+  "message": "查询用户成功",
+  "data": [
+    {
+      "id": 6,
+      "full_name": "张祖宁",
+      "username": "2024104"
+    }
+  ]
+}
+```
+
+**错误响应示例**:
+```json
+{
+  "code": 404,
+  "success": false,
+  "message": "未找到匹配的用户"
+}
+```
+
 ### 2. 创建用户
 
 ```bash

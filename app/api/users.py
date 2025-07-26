@@ -77,6 +77,34 @@ def get_users():
     except Exception as e:
         return api_error(f"获取用户列表失败: {str(e)}", 500)
 
+@api_bp.route('/users/search-by-name', methods=['GET'])
+@jwt_required()
+def search_user_by_name():
+    """通过真名查询用户ID"""
+    try:
+        full_name = request.args.get('full_name')
+        
+        if not full_name:
+            return api_error("缺少必填参数: full_name", 400)
+        
+        # 精确匹配真名
+        users = User.query.filter(User.full_name == full_name).all()
+        
+        if not users:
+            return api_error("未找到匹配的用户", 404)
+        
+        # 只返回用户ID和真名
+        users_data = [{
+            "id": user.id,
+            "full_name": user.full_name,
+            "username": user.username
+        } for user in users]
+        
+        return api_success(data=users_data, message="查询用户成功")
+        
+    except Exception as e:
+        return api_error(f"查询用户失败: {str(e)}", 500)
+
 @api_bp.route('/users', methods=['POST'])
 @jwt_required()
 def create_user():

@@ -190,6 +190,42 @@ Authorization: Bearer YOUR_JWT_TOKEN
 - `role` (string, 可选): 按角色筛选
 - `search` (string, 可选): 搜索用户名或姓名
 
+### 1.1 通过真名查询用户ID
+
+**接口地址**: `GET /api/v1/users/search-by-name`
+
+**描述**: 通过用户真名精确查询用户ID
+
+**认证**: 需要JWT令牌
+
+**查询参数**:
+- `full_name` (string, 必填): 用户真名
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "success": true,
+  "message": "查询用户成功",
+  "data": [
+    {
+      "id": 1,
+      "full_name": "张三",
+      "username": "zhangsan"
+    }
+  ]
+}
+```
+
+**错误响应示例**:
+```json
+{
+  "code": 404,
+  "success": false,
+  "message": "未找到匹配的用户"
+}
+```
+
 **响应示例**:
 ```json
 {
