@@ -375,3 +375,273 @@ class AITrainingPlan(db.Model):
             'generated_at': self.generated_at.isoformat() if self.generated_at else None,
             'status': self.status
         }
+
+# 仓库物料管理模型
+class MaterialCategory(db.Model):
+    """物料分类模型"""
+    __tablename__ = 'material_categories'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, comment='分类名称')
+    description = db.Column(db.Text, comment='分类描述')
+    parent_id = db.Column(db.Integer, db.ForeignKey('material_categories.id'), comment='父分类ID')
+    sort_order = db.Column(db.Integer, default=0, comment='排序值')
+    created_at = db.Column(db.DateTime, default=beijing_now, comment='创建时间')
+    
+    # 关系
+    materials = db.relationship('Material', backref='category', lazy='dynamic')
+    children = db.relationship('MaterialCategory', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'parent_id': self.parent_id,
+            'sort_order': self.sort_order,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+
+class Material(db.Model):
+    """物料模型"""
+    __tablename__ = 'materials'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(50), unique=True, nullable=False, comment='物料编码')
+    name = db.Column(db.String(150), nullable=False, comment='物料名称')
+    category_id = db.Column(db.Integer, db.ForeignKey('material_categories.id'), nullable=False)
+    description = db.Column(db.Text, comment='物料描述')
+    unit = db.Column(db.String(20), nullable=False, comment='计量单位')
+    stock_quantity = db.Column(db.Integer, default=0, comment='当前库存数量')
+    min_stock = db.Column(db.Integer, comment='最小安全库存')
+    max_stock = db.Column(db.Integer, comment='最大库存')
+    unit_price = db.Column(db.Numeric(10, 2), comment='单价')
+    location = db.Column(db.String(100), comment='存放位置')
+    supplier = db.Column(db.String(150), comment='供应商')
+    created_at = db.Column(db.DateTime, default=beijing_now, comment='创建时间')
+    updated_at = db.Column(db.DateTime, default=beijing_now, onupdate=beijing_now, comment='更新时间')
+    
+    # 关系
+    transactions = db.relationship('MaterialTransaction', backref='material', lazy='dynamic')
+    
+    @property
+    def status(self):
+        """计算物料状态"""
+        if self.stock_quantity == 0:
+            return 'out_of_stock'
+        elif self.min_stock and self.stock_quantity <= self.min_stock:
+            return 'low_stock'
+        else:
+            return 'available'
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'code': self.code,
+            'name': self.name,
+            'category_id': self.category_id,
+            'category_name': self.category.name if self.category else None,
+            'description': self.description,
+            'unit': self.unit,
+            'stock_quantity': self.stock_quantity,
+            'min_stock': self.min_stock,
+            'max_stock': self.max_stock,
+            'unit_price': float(self.unit_price) if self.unit_price else None,
+            'location': self.location,
+            'supplier': self.supplier,
+            'status': self.status,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+
+class MaterialRequest(db.Model):
+    """物料申领模型"""
+    __tablename__ = 'material_requests'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    request_number = db.Column(db.String(50), unique=True, nullable=False, comment='申领单号')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    project_name = db.Column(db.String(150), comment='关联的项目名称')
+    status = db.Column(db.Enum('pending', 'approved', 'rejected', 'issued', 'returned', 'overdue'), 
+                      default='pending', comment='申领状态')
+    materials = db.Column(db.JSON, nullable=False, comment='申领的物料列表')
+    approved_materials = db.Column(db.JSON, comment='批准的物料列表')
+    expected_return_date = db.Column(db.Date, comment='预期归还日期')
+    notes = db.Column(db.Text, comment='申领备注')
+    approver_id = db.Column(db.Integer, db.ForeignKey('users.id'), comment='审批人ID')
+    approved_at = db.Column(db.DateTime, comment='审批时间')
+    approval_comment = db.Column(db.Text, comment='审批意见')
+    created_at = db.Column(db.DateTime, default=beijing_now, comment='创建时间')
+    
+    # 关系
+    user = db.relationship('User', foreign_keys=[user_id], backref='material_requests')
+    approver = db.relationship('User', foreign_keys=[approver_id], backref='approved_requests')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'request_number': self.request_number,
+            'user_id': self.user_id,
+            'user_name': self.user.full_name if self.user else None,
+            'project_name': self.project_name,
+            'status': self.status,
+            'materials': self.materials,
+            'approved_materials': self.approved_materials,
+            'expected_return_date': self.expected_return_date.isoformat() if self.expected_return_date else None,
+            'notes': self.notes,
+            'approver_id': self.approver_id,
+            'approver_name': self.approver.full_name if self.approver else None,
+            'approved_at': self.approved_at.isoformat() if self.approved_at else None,
+            'approval_comment': self.approval_comment,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+
+class MaterialTransaction(db.Model):
+    """物料出入库记录模型"""
+    __tablename__ = 'material_transactions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    material_id = db.Column(db.Integer, db.ForeignKey('materials.id'), nullable=False)
+    transaction_type = db.Column(db.Enum('in', 'out', 'return', 'adjust'), nullable=False, comment='交易类型')
+    quantity = db.Column(db.Integer, nullable=False, comment='变动数量')
+    before_quantity = db.Column(db.Integer, nullable=False, comment='变动前库存')
+    after_quantity = db.Column(db.Integer, nullable=False, comment='变动后库存')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), comment='操作人ID')
+    request_id = db.Column(db.Integer, db.ForeignKey('material_requests.id'), comment='关联的申领单ID')
+    notes = db.Column(db.Text, comment='备注')
+    created_at = db.Column(db.DateTime, default=beijing_now, comment='创建时间')
+    
+    # 关系
+    user = db.relationship('User', backref='material_transactions')
+    request = db.relationship('MaterialRequest', backref='transactions')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'material_id': self.material_id,
+            'material_name': self.material.name if self.material else None,
+            'transaction_type': self.transaction_type,
+            'quantity': self.quantity,
+            'before_quantity': self.before_quantity,
+            'after_quantity': self.after_quantity,
+            'user_id': self.user_id,
+            'user_name': self.user.full_name if self.user else None,
+            'request_id': self.request_id,
+            'notes': self.notes,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+
+# 维修工单管理模型
+class MaintenanceOrder(db.Model):
+    """维修工单模型"""
+    __tablename__ = 'maintenance_orders'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    order_number = db.Column(db.String(50), unique=True, nullable=False, comment='工单号')
+    device_id = db.Column(db.Integer, db.ForeignKey('devices.id'), nullable=False)
+    fault_type = db.Column(db.Enum('hardware', 'software', 'network', 'power', 'other'), 
+                          nullable=False, comment='故障类型')
+    fault_description = db.Column(db.Text, nullable=False, comment='故障描述')
+    images = db.Column(db.JSON, comment='故障图片URL列表')
+    priority = db.Column(db.Enum('low', 'medium', 'high', 'urgent'), 
+                        default='medium', comment='优先级')
+    status = db.Column(db.Enum('pending', 'assigned', 'in_progress', 'completed', 'cancelled'), 
+                      default='pending', comment='工单状态')
+    reporter_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    assignee_id = db.Column(db.Integer, db.ForeignKey('users.id'), comment='维修人员ID')
+    reported_at = db.Column(db.DateTime, default=beijing_now, comment='报修时间')
+    assigned_at = db.Column(db.DateTime, comment='分配时间')
+    expected_completion = db.Column(db.DateTime, comment='预期完成时间')
+    actual_completion = db.Column(db.DateTime, comment='实际完成时间')
+    solution_description = db.Column(db.Text, comment='解决方案描述')
+    maintenance_notes = db.Column(db.Text, comment='维修备注')
+    completion_images = db.Column(db.JSON, comment='维修完成图片URL列表')
+    parts_used = db.Column(db.JSON, comment='使用的零件列表')
+    
+    # 关系
+    device = db.relationship('Device', backref='maintenance_orders')
+    reporter = db.relationship('User', foreign_keys=[reporter_id], backref='reported_orders')
+    assignee = db.relationship('User', foreign_keys=[assignee_id], backref='assigned_orders')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'order_number': self.order_number,
+            'device_id': self.device_id,
+            'device_name': self.device.device_name if self.device else None,
+            'fault_type': self.fault_type,
+            'fault_description': self.fault_description,
+            'images': self.images,
+            'priority': self.priority,
+            'status': self.status,
+            'reporter_id': self.reporter_id,
+            'reporter_name': self.reporter.full_name if self.reporter else None,
+            'assignee_id': self.assignee_id,
+            'assignee_name': self.assignee.full_name if self.assignee else None,
+            'reported_at': self.reported_at.isoformat() if self.reported_at else None,
+            'assigned_at': self.assigned_at.isoformat() if self.assigned_at else None,
+            'expected_completion': self.expected_completion.isoformat() if self.expected_completion else None,
+            'actual_completion': self.actual_completion.isoformat() if self.actual_completion else None,
+            'solution_description': self.solution_description,
+            'maintenance_notes': self.maintenance_notes,
+            'completion_images': self.completion_images,
+            'parts_used': self.parts_used
+        }
+
+# 值班调度管理模型
+class DutySchedule(db.Model):
+    """值班安排与日志模型"""
+    __tablename__ = 'duty_schedules'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    duty_date = db.Column(db.Date, nullable=False, comment='值班日期')
+    shift_type = db.Column(db.Enum('morning', 'afternoon', 'evening', 'night'), 
+                          nullable=False, comment='班次类型')
+    start_time = db.Column(db.Time, nullable=False, comment='开始时间')
+    end_time = db.Column(db.Time, nullable=False, comment='结束时间')
+    location = db.Column(db.String(100), comment='值班地点')
+    responsibilities = db.Column(db.JSON, comment='职责列表')
+    status = db.Column(db.Enum('scheduled', 'completed', 'absent', 'leave', 'substituted'), 
+                      default='scheduled', comment='值班状态')
+    substitute_id = db.Column(db.Integer, db.ForeignKey('users.id'), comment='替班人ID')
+    notes = db.Column(db.Text, comment='安排备注')
+    check_in_time = db.Column(db.DateTime, comment='签到时间')
+    check_in_location = db.Column(db.String(100), comment='签到地点')
+    check_in_notes = db.Column(db.Text, comment='签到备注')
+    check_out_time = db.Column(db.DateTime, comment='签退时间')
+    summary = db.Column(db.Text, comment='工作总结')
+    issues = db.Column(db.JSON, comment='遇到的问题列表')
+    handover_notes = db.Column(db.Text, comment='交接班备注')
+    created_at = db.Column(db.DateTime, default=beijing_now, comment='创建时间')
+    updated_at = db.Column(db.DateTime, default=beijing_now, onupdate=beijing_now, comment='更新时间')
+    
+    # 关系
+    user = db.relationship('User', foreign_keys=[user_id], backref='duty_schedules')
+    substitute = db.relationship('User', foreign_keys=[substitute_id], backref='substitute_schedules')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'user_name': self.user.full_name if self.user else None,
+            'duty_date': self.duty_date.isoformat() if self.duty_date else None,
+            'shift_type': self.shift_type,
+            'start_time': str(self.start_time) if self.start_time else None,
+            'end_time': str(self.end_time) if self.end_time else None,
+            'location': self.location,
+            'responsibilities': self.responsibilities,
+            'status': self.status,
+            'substitute_id': self.substitute_id,
+            'substitute_name': self.substitute.full_name if self.substitute else None,
+            'notes': self.notes,
+            'check_in_time': self.check_in_time.isoformat() if self.check_in_time else None,
+            'check_in_location': self.check_in_location,
+            'check_in_notes': self.check_in_notes,
+            'check_out_time': self.check_out_time.isoformat() if self.check_out_time else None,
+            'summary': self.summary,
+            'issues': self.issues,
+            'handover_notes': self.handover_notes,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }

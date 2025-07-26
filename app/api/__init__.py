@@ -23,3 +23,6 @@ from . import environmental
 from . import upload
 from . import users
 from . import user_profiles
+from . import materials
+from . import maintenance
+from . import duty
